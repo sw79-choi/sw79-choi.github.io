@@ -10,7 +10,7 @@ const pauseButton = document.querySelector("#pause-game");
 const restartButton = document.querySelector("#restart-game");
 const gridSize = 20;
 const cellSize = 20;
-const tickRate = 140;
+const tickRate = 210;
 const highScoreKey = "sw79-choi-worm-high-score";
 const directions = {
   up: { x: 0, y: -1 },

@@ -1,11 +1,12 @@
 :root {
   color-scheme: dark;
-  --background: #0d1117;
-  --surface: #161b22;
-  --text: #f0f6fc;
-  --muted: #a8b3c2;
-  --accent: #4fd1c5;
-  --border: #30363d;
+  --background: #050607;
+  --surface: #111518;
+  --text: #f5f7f8;
+  --muted: #a7b0b5;
+  --accent: #8de3d4;
+  --warm: #f6c453;
+  --border: #252c2f;
 }
 
 * {
@@ -20,7 +21,7 @@ body {
   margin: 0;
   background: var(--background);
   color: var(--text);
-  font: 16px/1.6 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font: 16px/1.65 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 a {
@@ -31,19 +32,22 @@ a {
   align-items: center;
   border-bottom: 1px solid var(--border);
   display: flex;
-  gap: 1.5rem;
+  gap: 2rem;
   justify-content: space-between;
-  padding: 1rem clamp(1rem, 4vw, 4rem);
+  padding: 1rem max(1rem, calc((100vw - 76rem) / 2));
   position: sticky;
   top: 0;
-  background: rgba(13, 17, 23, 0.96);
+  background: rgba(5, 6, 7, 0.94);
+  backdrop-filter: blur(14px);
   z-index: 1;
 }
 
 .brand {
   color: var(--text);
-  font-weight: 700;
+  font-size: 0.95rem;
+  font-weight: 650;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 nav {
@@ -51,6 +55,7 @@ nav {
   flex-wrap: wrap;
   gap: 0.75rem 1.25rem;
   justify-content: flex-end;
+  font-size: 0.9rem;
 }
 
 nav a {
@@ -59,51 +64,69 @@ nav a {
 
 main {
   margin: 0 auto;
-  max-width: 72rem;
-  padding: 0 1rem 4rem;
+  max-width: 76rem;
+  padding: 0 1.25rem 5rem;
 }
 
 .hero {
-  min-height: 50vh;
-  padding: clamp(4rem, 12vw, 9rem) 0 4rem;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  min-height: min(78vh, 52rem);
+  padding: clamp(5rem, 14vw, 11rem) 0 clamp(4rem, 10vw, 8rem);
+  place-content: center start;
 }
 
 .eyebrow {
   color: var(--accent);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
 h1 {
-  font-size: clamp(2.5rem, 8vw, 5rem);
-  line-height: 1;
+  font-size: clamp(3.25rem, 9vw, 8rem);
+  letter-spacing: 0;
+  line-height: 0.98;
   margin: 0;
+  max-width: 11ch;
 }
 
 h2 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  letter-spacing: 0;
+  line-height: 1.05;
   margin-top: 0;
 }
 
 .lede {
   color: var(--muted);
-  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
-  max-width: 42rem;
+  font-size: clamp(1.1rem, 2.2vw, 1.45rem);
+  margin-bottom: 0;
+  max-width: 44rem;
 }
 
 .content-section {
   border-top: 1px solid var(--border);
-  padding: 3rem 0;
+  display: grid;
+  gap: 1.5rem 3rem;
+  grid-template-columns: minmax(12rem, 0.7fr) minmax(0, 1.3fr);
+  padding: clamp(4rem, 8vw, 7rem) 0;
 }
 
 .content-section p {
   max-width: 46rem;
+  margin-top: 0;
 }
 
 .game-section {
   background: var(--surface);
+  border: 1px solid var(--border);
   padding-left: 1.25rem;
   padding-right: 1.25rem;
+}
+
+.game-section h2 {
+  margin-left: 0;
 }
 
 .game-layout {
@@ -197,7 +220,7 @@ button:disabled {
 .site-footer {
   border-top: 1px solid var(--border);
   color: var(--muted);
-  padding: 1.5rem 1rem;
+  padding: 2rem 1rem;
   text-align: center;
 }
 
@@ -210,6 +233,19 @@ button:disabled {
 
   nav {
     justify-content: flex-start;
+  }
+
+  main {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .content-section {
+    display: block;
+  }
+
+  .content-section h2 {
+    margin-bottom: 1.25rem;
   }
 
   .game-layout {
