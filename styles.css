@@ -70,10 +70,29 @@ main {
 
 .hero {
   border-bottom: 1px solid var(--border);
-  display: grid;
+  display: block;
   min-height: min(78vh, 52rem);
   padding: clamp(5rem, 14vw, 11rem) 0 clamp(4rem, 10vw, 8rem);
-  place-content: center start;
+}
+
+.hero-copy {
+  max-width: 76rem;
+}
+
+.hero-media {
+  margin: clamp(2rem, 5vw, 4rem) 0 0;
+  max-width: 64rem;
+}
+
+.hero-media img {
+  aspect-ratio: 1024 / 597;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: block;
+  height: auto;
+  max-width: 100%;
+  object-fit: cover;
+  width: 100%;
 }
 
 .eyebrow {
@@ -84,11 +103,12 @@ main {
 }
 
 h1 {
-  font-size: clamp(3.25rem, 9vw, 8rem);
+  font-size: clamp(1.5rem, 7.8vw, 5rem);
   letter-spacing: 0;
   line-height: 0.98;
   margin: 0;
-  max-width: 11ch;
+  max-width: none;
+  white-space: nowrap;
 }
 
 h2 {
