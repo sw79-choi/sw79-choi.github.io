@@ -100,10 +100,98 @@ h2 {
   max-width: 46rem;
 }
 
-.game-placeholder {
+.game-section {
   background: var(--surface);
   padding-left: 1.25rem;
   padding-right: 1.25rem;
+}
+
+.game-layout {
+  align-items: start;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: minmax(0, 400px) minmax(12rem, 1fr);
+}
+
+.game-board-wrap {
+  min-width: 0;
+}
+
+#game-board {
+  background: #0a0f14;
+  border: 1px solid var(--border);
+  display: block;
+  height: auto;
+  max-width: 100%;
+  touch-action: none;
+  width: 400px;
+}
+
+.game-status,
+.game-help {
+  color: var(--muted);
+}
+
+.score-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  justify-content: space-between;
+}
+
+.game-actions,
+.direction-pad {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.game-actions {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.direction-pad {
+  grid-template-columns: repeat(3, minmax(0, 3.5rem));
+  justify-content: center;
+}
+
+.direction-pad button:first-child {
+  grid-column: 2;
+}
+
+.direction-pad button:nth-child(2) {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.direction-pad button:nth-child(3) {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.direction-pad button:nth-child(4) {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+button {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  cursor: pointer;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+}
+
+button:hover,
+button:focus-visible {
+  border-color: var(--accent);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .site-footer {
@@ -122,5 +210,9 @@ h2 {
 
   nav {
     justify-content: flex-start;
+  }
+
+  .game-layout {
+    grid-template-columns: 1fr;
   }
 }

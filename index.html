@@ -42,9 +42,32 @@
       <p>Samsung Flagship 단말 개발: Galaxy S9 ~ Galaxy S26</p>
     </section>
 
-    <section id="games" class="content-section game-placeholder" aria-labelledby="games-title">
+    <section id="games" class="content-section game-section" aria-labelledby="games-title">
       <h2 id="games-title">Games</h2>
-      <p>The game area is ready for the next development loop.</p>
+      <div class="game-layout">
+        <div class="game-board-wrap">
+          <canvas id="game-board" width="400" height="400" aria-label="Worm game board"></canvas>
+          <p id="game-status" class="game-status" aria-live="polite">Press Start to play.</p>
+        </div>
+        <div class="game-panel">
+          <div class="score-row" aria-label="Game scores">
+            <span>Score <strong id="score">0</strong></span>
+            <span>Best <strong id="high-score">0</strong></span>
+          </div>
+          <div class="game-actions">
+            <button id="start-game" type="button">Start</button>
+            <button id="pause-game" type="button" disabled>Pause</button>
+            <button id="restart-game" type="button">Restart</button>
+          </div>
+          <div class="direction-pad" aria-label="Touch controls">
+            <button type="button" data-direction="up" aria-label="Move up">Up</button>
+            <button type="button" data-direction="left" aria-label="Move left">Left</button>
+            <button type="button" data-direction="down" aria-label="Move down">Down</button>
+            <button type="button" data-direction="right" aria-label="Move right">Right</button>
+          </div>
+          <p class="game-help">Use arrow keys or WASD. Avoid the walls and your tail.</p>
+        </div>
+      </div>
     </section>
 
     <section id="contact" class="content-section" aria-labelledby="contact-title">
