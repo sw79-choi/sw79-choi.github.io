@@ -7,6 +7,7 @@
   --accent: #8de3d4;
   --warm: #f6c453;
   --border: #252c2f;
+  --section-gray: #1b2023;
 }
 
 * {
@@ -64,15 +65,34 @@ nav a {
 
 main {
   margin: 0 auto;
-  max-width: 76rem;
-  padding: 0 1.25rem 5rem;
+  max-width: none;
+  padding: 0 0 5rem;
 }
 
 .hero {
+  background: var(--section-gray);
   border-bottom: 1px solid var(--border);
   display: block;
   min-height: min(78vh, 52rem);
   padding: clamp(5rem, 14vw, 11rem) 0 clamp(4rem, 10vw, 8rem);
+  padding-left: max(1.25rem, calc((100vw - 76rem) / 2));
+  padding-right: max(1.25rem, calc((100vw - 76rem) / 2));
+}
+
+.content-section {
+  padding-left: max(1.25rem, calc((100vw - 76rem) / 2));
+  padding-right: max(1.25rem, calc((100vw - 76rem) / 2));
+}
+
+#about,
+#projects,
+#contact {
+  background: var(--background);
+}
+
+#experience,
+#games {
+  background: var(--section-gray);
 }
 
 .hero-copy {
@@ -125,12 +145,24 @@ h2 {
   max-width: 44rem;
 }
 
+.bilingual-copy {
+  display: grid;
+  gap: 0.5rem 2rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.bilingual-copy [lang="en"] {
+  color: var(--muted);
+}
+
 .content-section {
   border-top: 1px solid var(--border);
   display: grid;
   gap: 1.5rem 3rem;
   grid-template-columns: minmax(12rem, 0.7fr) minmax(0, 1.3fr);
   padding: clamp(4rem, 8vw, 7rem) 0;
+  padding-left: max(1.25rem, calc((100vw - 76rem) / 2));
+  padding-right: max(1.25rem, calc((100vw - 76rem) / 2));
 }
 
 .content-section p {
@@ -139,10 +171,7 @@ h2 {
 }
 
 .game-section {
-  background: var(--surface);
   border: 1px solid var(--border);
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
 }
 
 .game-section h2 {
@@ -256,8 +285,8 @@ button:disabled {
   }
 
   main {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .content-section {
@@ -266,6 +295,15 @@ button:disabled {
 
   .content-section h2 {
     margin-bottom: 1.25rem;
+  }
+
+  .bilingual-copy {
+    display: block;
+  }
+
+  .bilingual-copy [lang="en"] {
+    display: block;
+    margin-top: 0.75rem;
   }
 
   .game-layout {
