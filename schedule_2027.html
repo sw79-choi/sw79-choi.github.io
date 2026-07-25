@@ -527,16 +527,19 @@
       const margin = { left: 118, right: 28, top: 54, bottom: 42 };
       const width = 1120;
       const height = 780;
-      const start = parse("2026-09-01");
-      const end = parse("2027-02-20");
-      const span = end - start;
-      const x = (date) => margin.left + ((parse(date) - start) / span) * (width - margin.left - margin.right);
+      const fixedStart = parse("2026-09-01");
+      const fixedEnd = parse("2027-02-20");
+      let domainStart = fixedStart;
+      let domainEnd = fixedEnd;
+      const dayMs = 24 * 60 * 60 * 1000;
+      const x = (date) => {
+        const span = domainEnd - domainStart || dayMs;
+        return margin.left + ((parse(date) - domainStart) / span) * (width - margin.left - margin.right);
+      };
       const laneGap = 58;
       const y0 = 92;
       const barH = 12;
       const subY = { apply: -16, exam: -2, result: 12, register: 26, extra: 40 };
-      const months = ["2026-09-01", "2026-10-01", "2026-11-01", "2026-12-01", "2027-01-01", "2027-02-01"];
-      const labels = ["9월", "10월", "11월", "12월", "1월", "2월"];
 
       const make = (name, attrs = {}) => {
         const el = document.createElementNS("http://www.w3.org/2000/svg", name);
@@ -545,6 +548,46 @@
       };
 
       const visibleItems = (items, filter) => items.filter((item) => filter === "all" || item[0] === filter);
+
+      const isoDate = (date) => {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, "0");
+        const d = String(date.getDate()).padStart(2, "0");
+        return `${y}-${m}-${d}`;
+      };
+
+      const calculateDomain = (filter) => {
+        if (filter === "all") {
+          domainStart = fixedStart;
+          domainEnd = fixedEnd;
+          return;
+        }
+        const visible = data.flatMap((row) => visibleItems(row.items, filter));
+        if (!visible.length) {
+          domainStart = fixedStart;
+          domainEnd = fixedEnd;
+          return;
+        }
+        const min = new Date(Math.min(...visible.map((item) => parse(item[2]).getTime())));
+        const max = new Date(Math.max(...visible.map((item) => parse(item[3]).getTime())));
+        domainStart = new Date(min.getTime() - 4 * dayMs);
+        domainEnd = new Date(max.getTime() + 4 * dayMs);
+        if (domainEnd - domainStart < 18 * dayMs) {
+          const mid = (domainStart.getTime() + domainEnd.getTime()) / 2;
+          domainStart = new Date(mid - 9 * dayMs);
+          domainEnd = new Date(mid + 9 * dayMs);
+        }
+      };
+
+      const monthTicks = () => {
+        const ticks = [new Date(domainStart)];
+        const cursor = new Date(domainStart.getFullYear(), domainStart.getMonth() + 1, 1);
+        while (cursor <= domainEnd) {
+          ticks.push(new Date(cursor));
+          cursor.setMonth(cursor.getMonth() + 1);
+        }
+        return ticks;
+      };
 
       const showTip = (event, row, item) => {
         tip.textContent = `${row.u} · ${item[1]} · ${rangeText(item[2], item[3])}`;
@@ -568,11 +611,12 @@
 
       const renderChart = (filter = "all") => {
         plot.replaceChildren();
-        months.forEach((m, i) => {
-          const xx = x(m);
+        calculateDomain(filter);
+        monthTicks().forEach((m) => {
+          const xx = x(isoDate(m));
           plot.appendChild(make("line", { x1: xx, y1: margin.top, x2: xx, y2: height - margin.bottom, class: "month-line" }));
           const label = make("text", { x: xx + 6, y: 28, class: "axis-text" });
-          label.textContent = labels[i];
+          label.textContent = `${m.getMonth() + 1}월`;
           plot.appendChild(label);
         });
         plot.appendChild(make("line", { x1: margin.left, y1: margin.top, x2: width - margin.right, y2: margin.top, class: "axis" }));
