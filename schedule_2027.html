@@ -1,0 +1,319 @@
+<div id="admission-gantt-2027" class="admission-gantt">
+  <div class="viz-controls" aria-label="표시 범례">
+    <span class="viz-badge"><span class="swatch swatch-apply"></span>원서/서류</span>
+    <span class="viz-badge"><span class="swatch swatch-exam"></span>면접/논술/실기</span>
+    <span class="viz-badge"><span class="swatch swatch-result"></span>합격 발표</span>
+    <span class="viz-badge"><span class="swatch swatch-register"></span>등록</span>
+    <span class="viz-badge"><span class="swatch swatch-extra"></span>충원/정시</span>
+  </div>
+  <svg class="gantt-svg" viewBox="0 0 1120 820" role="img" aria-labelledby="admission-gantt-title admission-gantt-desc">
+    <title id="admission-gantt-title">2027학년도 대학별 입시 일정 간트 차트</title>
+    <desc id="admission-gantt-desc">가로축은 2026년 9월부터 2027년 2월까지의 시간, 세로축은 대학이며 원서접수, 대학별고사, 합격발표, 등록 일정을 막대와 점으로 표시합니다.</desc>
+    <g class="plot"></g>
+  </svg>
+  <div class="tooltip" id="admission-gantt-tip" role="status" aria-live="polite"></div>
+</div>
+<style>
+  #admission-gantt-2027 {
+    position: relative;
+    --background: #ffffff;
+    --foreground: #172033;
+    --muted-foreground: #667085;
+    --border: #d7dce5;
+    --card: #ffffff;
+    --card-foreground: #172033;
+    --viz-series-1: #3b82f6;
+    --viz-series-2: #f97316;
+    --viz-series-3: #16a34a;
+    --viz-series-4: #8b5cf6;
+    --viz-series-5: #64748b;
+    box-sizing: border-box;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    padding: 16px;
+  }
+  #admission-gantt-2027 .viz-controls {
+    margin-block-end: 0.75rem;
+  }
+  #admission-gantt-2027 .viz-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  #admission-gantt-2027 .swatch {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 999px;
+    display: inline-block;
+  }
+  #admission-gantt-2027 .swatch-apply { background: color-mix(in srgb, var(--viz-series-1) 70%, transparent); }
+  #admission-gantt-2027 .swatch-exam { background: color-mix(in srgb, var(--viz-series-2) 70%, transparent); }
+  #admission-gantt-2027 .swatch-result { background: color-mix(in srgb, var(--viz-series-3) 70%, transparent); }
+  #admission-gantt-2027 .swatch-register { background: color-mix(in srgb, var(--viz-series-4) 70%, transparent); }
+  #admission-gantt-2027 .swatch-extra { background: color-mix(in srgb, var(--viz-series-5) 70%, transparent); }
+  #admission-gantt-2027 .gantt-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+  }
+  #admission-gantt-2027 .axis,
+  #admission-gantt-2027 .lane-line,
+  #admission-gantt-2027 .month-line {
+    stroke: var(--border);
+    stroke-width: 1;
+  }
+  #admission-gantt-2027 .axis-text,
+  #admission-gantt-2027 .lane-label,
+  #admission-gantt-2027 .bar-label {
+    fill: var(--foreground);
+  }
+  #admission-gantt-2027 .axis-text,
+  #admission-gantt-2027 .bar-label {
+    font-size: 13px;
+  }
+  #admission-gantt-2027 .lane-label {
+    font-size: 15px;
+    font-weight: 500;
+  }
+  #admission-gantt-2027 .note-text {
+    fill: var(--muted-foreground);
+    font-size: 12px;
+  }
+  #admission-gantt-2027 .bar {
+    rx: 5;
+    ry: 5;
+    stroke: color-mix(in srgb, var(--foreground) 12%, transparent);
+    stroke-width: 1;
+  }
+  #admission-gantt-2027 .bar.apply { fill: color-mix(in srgb, var(--viz-series-1) 58%, transparent); }
+  #admission-gantt-2027 .bar.exam { fill: color-mix(in srgb, var(--viz-series-2) 62%, transparent); }
+  #admission-gantt-2027 .bar.result { fill: color-mix(in srgb, var(--viz-series-3) 68%, transparent); }
+  #admission-gantt-2027 .bar.register { fill: color-mix(in srgb, var(--viz-series-4) 64%, transparent); }
+  #admission-gantt-2027 .bar.extra { fill: color-mix(in srgb, var(--viz-series-5) 55%, transparent); }
+  #admission-gantt-2027 .milestone {
+    stroke: var(--background);
+    stroke-width: 2;
+  }
+  #admission-gantt-2027 .milestone.result { fill: var(--viz-series-3); }
+  #admission-gantt-2027 .milestone.register { fill: var(--viz-series-4); }
+  #admission-gantt-2027 .milestone.extra { fill: var(--viz-series-5); }
+  #admission-gantt-2027 .hit {
+    fill: transparent;
+    cursor: default;
+  }
+  #admission-gantt-2027 .tooltip {
+    position: absolute;
+    max-width: min(320px, calc(100% - 1rem));
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -110%);
+    transition: opacity 120ms ease;
+    background: var(--card);
+    color: var(--card-foreground);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.16);
+  }
+  #admission-gantt-2027 .tooltip.is-visible {
+    opacity: 1;
+  }
+  @media (max-width: 520px) {
+    #admission-gantt-2027 .axis-text,
+    #admission-gantt-2027 .bar-label {
+      font-size: 12px;
+    }
+    #admission-gantt-2027 .lane-label {
+      font-size: 13px;
+    }
+  }
+</style>
+<script>
+(() => {
+  const root = document.getElementById("admission-gantt-2027");
+  const svg = root.querySelector(".gantt-svg");
+  const plot = root.querySelector(".plot");
+  const tip = document.getElementById("admission-gantt-tip");
+  const parse = (s) => new Date(`${s}T00:00:00+09:00`);
+  const fmt = new Intl.DateTimeFormat("ko-KR", { month: "numeric", day: "numeric", weekday: "short" });
+  const rangeText = (start, end) => start === end ? fmt.format(parse(start)) : `${fmt.format(parse(start))} - ${fmt.format(parse(end))}`;
+  const data = [
+    { u: "DGIST", items: [
+      ["apply", "수시 원서/서류", "2026-09-03", "2026-09-10"],
+      ["apply", "추천 입력", "2026-09-03", "2026-09-16"],
+      ["exam", "과학인재 면접", "2026-11-25", "2026-11-27"],
+      ["result", "합격 발표", "2026-12-18", "2026-12-18"],
+      ["register", "수시 등록", "2026-12-21", "2026-12-23"],
+      ["extra", "정시 원서", "2027-01-04", "2027-01-07"],
+      ["extra", "정시 발표/등록", "2027-02-05", "2027-02-12"]
+    ] },
+    { u: "GIST", items: [
+      ["apply", "수시 원서/서류", "2026-09-07", "2026-09-11"],
+      ["exam", "면접전형", "2026-10-22", "2026-10-23"],
+      ["result", "수시 발표", "2026-12-18", "2026-12-18"],
+      ["register", "수시 등록", "2026-12-21", "2026-12-23"],
+      ["extra", "정시 원서", "2027-01-04", "2027-01-06"],
+      ["extra", "정시 발표/등록", "2027-02-03", "2027-02-12"]
+    ] },
+    { u: "KAIST", items: [
+      ["apply", "Early/Regular 원서", "2026-09-01", "2026-09-09"],
+      ["apply", "추천서 입력", "2026-09-10", "2026-09-18"],
+      ["result", "Early 발표", "2026-10-12", "2026-10-12"],
+      ["exam", "Regular 면접", "2026-11-26", "2026-11-26"],
+      ["result", "Regular 발표", "2026-12-18", "2026-12-18"],
+      ["register", "Regular 등록", "2026-12-18", "2026-12-23"],
+      ["extra", "Late 원서", "2027-01-04", "2027-01-07"],
+      ["extra", "Late 발표/등록", "2027-02-05", "2027-02-12"]
+    ] },
+    { u: "KENTECH", items: [
+      ["apply", "수시 원서", "2026-09-07", "2026-09-11"],
+      ["apply", "서류 제출", "2026-09-07", "2026-09-14"],
+      ["result", "1단계 발표", "2026-11-20", "2026-11-20"],
+      ["exam", "면접평가", "2026-11-30", "2026-11-30"],
+      ["result", "수시 발표", "2026-12-11", "2026-12-11"],
+      ["register", "수시 등록", "2026-12-21", "2026-12-23"],
+      ["extra", "정시 발표/등록", "2027-01-29", "2027-02-12"]
+    ] },
+    { u: "POSTECH", items: [
+      ["apply", "원서/서류", "2026-09-08", "2026-09-10"],
+      ["result", "1단계 발표", "2026-11-20", "2026-11-20"],
+      ["exam", "면접", "2026-11-28", "2026-11-29"],
+      ["result", "합격 발표", "2026-12-18", "2026-12-18"],
+      ["register", "등록", "2026-12-22", "2026-12-29"]
+    ] },
+    { u: "UNIST", items: [
+      ["apply", "수시 원서", "2026-09-03", "2026-09-10"],
+      ["apply", "자소서/서류", "2026-09-03", "2026-09-11"],
+      ["result", "1단계 발표", "2026-11-04", "2026-11-04"],
+      ["exam", "면접평가", "2026-11-08", "2026-11-08"],
+      ["result", "수시 발표", "2026-12-18", "2026-12-18"],
+      ["register", "수시 등록", "2026-12-21", "2026-12-23"],
+      ["extra", "정시 원서", "2027-01-04", "2027-01-07"],
+      ["extra", "정시 발표/등록", "2027-02-05", "2027-02-12"]
+    ] },
+    { u: "경북대", items: [
+      ["apply", "원서접수", "2026-09-07", "2026-09-11"],
+      ["apply", "서류제출", "2026-09-07", "2026-09-16"],
+      ["result", "1단계 발표", "2026-10-14", "2026-11-06"],
+      ["exam", "실기/면접/논술", "2026-10-23", "2026-11-28"],
+      ["result", "최종 발표", "2026-12-18", "2026-12-18"],
+      ["register", "수시 등록", "2026-12-21", "2026-12-23"]
+    ] },
+    { u: "고려대", items: [
+      ["apply", "원서접수", "2026-09-07", "2026-09-09"],
+      ["apply", "서류/추천", "2026-09-07", "2026-09-18"],
+      ["exam", "면접/고사", "2026-10-31", "2026-11-22"],
+      ["result", "합격 발표", "2026-12-18", "2026-12-18"],
+      ["register", "문서등록", "2026-12-21", "2026-12-23"],
+      ["register", "등록금 납부", "2027-02-15", "2027-02-16"]
+    ] },
+    { u: "서울대", items: [
+      ["apply", "원서접수", "2026-09-07", "2026-09-09"],
+      ["apply", "서류/추천", "2026-09-07", "2026-09-18"],
+      ["result", "1단계 발표", "2026-11-20", "2026-11-27"],
+      ["exam", "면접/실기", "2026-11-26", "2026-12-05"],
+      ["result", "합격 발표", "2026-12-18", "2026-12-18"],
+      ["register", "문서등록", "2026-12-21", "2026-12-23"],
+      ["register", "등록금 납부", "2027-02-10", "2027-02-12"]
+    ] },
+    { u: "성균관대", items: [
+      ["apply", "원서접수", "2026-09-08", "2026-09-11"],
+      ["apply", "서류/추천", "2026-09-08", "2026-09-18"],
+      ["exam", "면접/논술/실기", "2026-10-17", "2026-11-22"],
+      ["result", "합격 발표", "2026-12-18", "2026-12-18"],
+      ["register", "문서등록", "2026-12-21", "2026-12-23"],
+      ["register", "등록금 납부", "2027-02-10", "2027-02-12"]
+    ] },
+    { u: "연세대", items: [
+      ["apply", "원서접수", "2026-09-07", "2026-09-09"],
+      ["apply", "서류제출", "2026-09-07", "2026-09-10"],
+      ["exam", "논술/면접", "2026-10-10", "2026-11-29"],
+      ["result", "합격 발표", "2026-12-18", "2026-12-18"],
+      ["register", "문서등록", "2026-12-21", "2026-12-23"],
+      ["register", "등록금 납부", "2027-02-10", "2027-02-12"]
+    ] },
+    { u: "한양대", items: [
+      ["apply", "원서접수", "2026-09-08", "2026-09-11"],
+      ["apply", "서류/추천", "2026-09-08", "2026-09-18"],
+      ["exam", "실기/면접/논술", "2026-10-03", "2026-12-06"],
+      ["result", "합격 발표", "2026-12-18", "2026-12-18"],
+      ["register", "전자문서 등록", "2026-12-21", "2026-12-23"],
+      ["register", "등록금 납부", "2027-02-10", "2027-02-12"]
+    ] }
+  ];
+  const margin = { left: 118, right: 28, top: 54, bottom: 42 };
+  const width = 1120;
+  const height = 820;
+  const start = parse("2026-09-01");
+  const end = parse("2027-02-20");
+  const span = end - start;
+  const x = (date) => margin.left + ((parse(date) - start) / span) * (width - margin.left - margin.right);
+  const laneGap = 58;
+  const y0 = 92;
+  const barH = 11;
+  const subY = { apply: -16, exam: -2, result: 12, register: 26, extra: 40 };
+  const months = ["2026-09-01", "2026-10-01", "2026-11-01", "2026-12-01", "2027-01-01", "2027-02-01"];
+  const labels = ["9월", "10월", "11월", "12월", "1월", "2월"];
+  const make = (name, attrs = {}) => {
+    const el = document.createElementNS("http://www.w3.org/2000/svg", name);
+    for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+    return el;
+  };
+  const showTip = (event, row, item) => {
+    tip.textContent = `${row.u} · ${item[1]} · ${rangeText(item[2], item[3])}`;
+    const rootBox = root.getBoundingClientRect();
+    const svgBox = svg.getBoundingClientRect();
+    const cx = event.clientX - rootBox.left;
+    const cy = event.clientY - rootBox.top;
+    tip.style.left = `${Math.min(Math.max(cx, 150), rootBox.width - 150)}px`;
+    tip.style.top = `${Math.max(cy, 36)}px`;
+    tip.classList.add("is-visible");
+  };
+  const hideTip = () => tip.classList.remove("is-visible");
+  months.forEach((m, i) => {
+    const xx = x(m);
+    plot.appendChild(make("line", { x1: xx, y1: margin.top, x2: xx, y2: height - margin.bottom, class: "month-line" }));
+    plot.appendChild(make("text", { x: xx + 6, y: 28, class: "axis-text" })).textContent = labels[i];
+  });
+  plot.appendChild(make("line", { x1: margin.left, y1: margin.top, x2: width - margin.right, y2: margin.top, class: "axis" }));
+  data.forEach((row, i) => {
+    const y = y0 + i * laneGap;
+    plot.appendChild(make("line", { x1: margin.left, y1: y + 31, x2: width - margin.right, y2: y + 31, class: "lane-line" }));
+    const label = make("text", { x: 12, y: y + 4, class: "lane-label" });
+    label.textContent = row.u;
+    plot.appendChild(label);
+    row.items.forEach((item) => {
+      const [type, name, s, e] = item;
+      const yy = y + subY[type];
+      const xs = x(s);
+      const xe = x(e);
+      const isPoint = s === e;
+      if (isPoint) {
+        const dot = make("circle", { cx: xs, cy: yy + 5, r: 6, class: `milestone ${type}` });
+        plot.appendChild(dot);
+        const hit = make("circle", { cx: xs, cy: yy + 5, r: 13, class: "hit" });
+        hit.addEventListener("mousemove", (event) => showTip(event, row, item));
+        hit.addEventListener("mouseleave", hideTip);
+        plot.appendChild(hit);
+      } else {
+        const minW = Math.max(7, xe - xs);
+        const rect = make("rect", { x: xs, y: yy, width: minW, height: barH, class: `bar ${type}` });
+        plot.appendChild(rect);
+        const hit = make("rect", { x: xs, y: yy - 6, width: minW, height: barH + 12, class: "hit" });
+        hit.addEventListener("mousemove", (event) => showTip(event, row, item));
+        hit.addEventListener("mouseleave", hideTip);
+        plot.appendChild(hit);
+      }
+      if (["exam", "extra"].includes(type) && (xe - xs) > 42) {
+        const text = make("text", { x: xs + 6, y: yy + 9, class: "bar-label" });
+        text.textContent = name;
+        plot.appendChild(text);
+      }
+    });
+  });
+  plot.appendChild(make("text", { x: margin.left, y: 804, class: "note-text" })).textContent =
+    "일부 대학은 전형별 세부 고사일이 많아 대표 기간으로 묶었습니다. 최종 지원 전 각 대학 입학처 공지의 변경사항을 확인하세요.";
+})();
+</script>
