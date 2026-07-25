@@ -215,11 +215,23 @@
       color: var(--muted);
       font-size: 13px;
       line-height: 1.35;
+      white-space: nowrap;
     }
     .event-name {
       font-size: 14px;
       line-height: 1.4;
-      overflow-wrap: anywhere;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .event-name span:last-child {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .detail {
       display: none;
@@ -246,14 +258,30 @@
       line-height: 1.55;
     }
     .doc-list li { margin: 4px 0; }
+    .doc-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .doc-label {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .doc-deadline {
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
     .tag {
       display: inline-block;
-      margin-bottom: 6px;
       border-radius: 999px;
       padding: 3px 8px;
       font-size: 12px;
       color: #fff;
       background: var(--muted);
+      line-height: 1.25;
+      white-space: nowrap;
     }
     .tag.apply { background: var(--apply); }
     .tag.exam { background: var(--exam); }
@@ -279,7 +307,27 @@
       }
       svg { min-width: 880px; }
       .cards { grid-template-columns: 1fr; }
-      .event-row { grid-template-columns: 84px 1fr; }
+      .card { padding: 16px; }
+      .univ-button strong { font-size: 19px; }
+      .track-title { font-size: 17px; }
+      .event-row {
+        grid-template-columns: minmax(98px, max-content) minmax(0, 1fr);
+        gap: 10px;
+        padding: 10px 0;
+      }
+      .event-date { font-size: 15px; }
+      .event-name { font-size: 16px; }
+      .doc-list {
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .doc-list li { margin: 8px 0; }
+      .doc-line {
+        align-items: baseline;
+      }
+      .doc-deadline {
+        font-size: 14px;
+      }
     }
   </style>
 </head>
@@ -674,10 +722,36 @@
           const tag = document.createElement("span");
           tag.className = `tag ${item[0]}`;
           tag.textContent = categoryLabels[item[0]];
-          name.append(tag, document.createElement("br"), item[1]);
+          const label = document.createElement("span");
+          label.textContent = item[1];
+          label.title = item[1];
+          name.append(tag, label);
           event.append(date, name);
           container.appendChild(event);
         });
+      };
+
+      const latestDeadline = (items) => {
+        if (!items.length) return null;
+        return items.reduce((latest, item) => parse(item[3]) > parse(latest) ? item[3] : latest, items[0][3]);
+      };
+
+      const hasAny = (text, keywords) => keywords.some((keyword) => text.includes(keyword));
+
+      const documentDeadline = (row, doc) => {
+        const text = String(doc);
+        const applyItems = row.items.filter((item) => item[0] === "apply");
+        let candidates = applyItems;
+
+        if (hasAny(text, ["정시", "수능"])) {
+          candidates = row.items.filter((item) => item[0] === "extra" && hasAny(item[1], ["원서", "서류", "업로드", "접수", "지원서"]));
+        } else if (hasAny(text, ["추천"])) {
+          candidates = applyItems.filter((item) => hasAny(item[1], ["추천"]));
+        } else if (hasAny(text, ["최종합격", "합격자", "원본", "졸업"])) {
+          candidates = row.items.filter((item) => item[0] === "register");
+        }
+
+        return latestDeadline(candidates.length ? candidates : applyItems);
       };
 
       const renderDetails = (filter = "all") => {
@@ -730,7 +804,17 @@
           docs.className = "doc-list";
           row.docs.forEach((doc) => {
             const li = document.createElement("li");
-            li.textContent = doc;
+            const line = document.createElement("span");
+            line.className = "doc-line";
+            const label = document.createElement("span");
+            label.className = "doc-label";
+            label.textContent = doc;
+            const deadline = document.createElement("span");
+            deadline.className = "doc-deadline";
+            const due = documentDeadline(row, doc);
+            deadline.textContent = due ? `마감 ${fmt.format(parse(due))}` : "마감 확인 필요";
+            line.append(label, deadline);
+            li.appendChild(line);
             docs.appendChild(li);
           });
           const docsWrap = document.createElement("div");
