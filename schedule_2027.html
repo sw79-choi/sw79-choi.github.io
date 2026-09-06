@@ -192,8 +192,17 @@
       cursor: pointer;
       text-align: left;
     }
+    .univ-heading {
+      display: grid;
+      gap: 3px;
+    }
     .univ-button strong {
       font-size: 17px;
+    }
+    .univ-button small {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
     }
     .chevron {
       color: var(--muted);
@@ -334,21 +343,20 @@
 <body>
   <main>
     <h1>2027학년도 대입 일정 Gantt</h1>
-    <p class="subtitle">항목 버튼을 누르면 해당 일정만 크게 볼 수 있습니다. 대학명을 누르면 대학별 전형 세부 일정과 제출서류가 펼쳐집니다.</p>
+    <p class="subtitle">지원 예정 전형만 모아 정리했습니다. 항목 버튼을 누르면 해당 일정만 크게 볼 수 있고, 대학명을 누르면 전형별 세부 일정과 제출서류가 펼쳐집니다.</p>
 
     <div class="controls" aria-label="일정 항목 선택">
       <button class="filter" type="button" data-filter="all" aria-pressed="true">전체</button>
       <button class="filter" type="button" data-filter="apply" aria-pressed="false"><span class="dot"></span>원서·서류</button>
-      <button class="filter" type="button" data-filter="exam" aria-pressed="false"><span class="dot"></span>면접·논술·실기</button>
+      <button class="filter" type="button" data-filter="exam" aria-pressed="false"><span class="dot"></span>면접</button>
       <button class="filter" type="button" data-filter="result" aria-pressed="false"><span class="dot"></span>합격 발표</button>
       <button class="filter" type="button" data-filter="register" aria-pressed="false"><span class="dot"></span>등록</button>
-      <button class="filter" type="button" data-filter="extra" aria-pressed="false"><span class="dot"></span>충원·정시</button>
     </div>
 
     <div class="chart-wrap">
-      <svg class="gantt-svg" viewBox="0 0 1120 780" role="img" aria-labelledby="gantt-title gantt-desc">
+      <svg class="gantt-svg" viewBox="0 0 1120 850" role="img" aria-labelledby="gantt-title gantt-desc">
         <title id="gantt-title">2027학년도 대학별 입시 일정 간트 차트</title>
-        <desc id="gantt-desc">가로축은 2026년 9월부터 2027년 2월까지의 시간, 세로축은 대학이며 선택한 항목의 원서접수, 대학별고사, 합격발표, 등록 일정을 표시합니다.</desc>
+        <desc id="gantt-desc">가로축은 선택한 지원 전형 일정의 실제 기간, 세로축은 대학이며 원서접수, 면접, 합격발표, 등록 일정을 표시합니다.</desc>
         <g class="plot"></g>
       </svg>
       <div class="tooltip" id="admission-gantt-tip" role="status" aria-live="polite"></div>
@@ -365,7 +373,7 @@
       const categoryLabels = {
         all: "전체",
         apply: "원서·서류",
-        exam: "면접·논술·실기",
+        exam: "면접",
         result: "합격 발표",
         register: "등록",
         extra: "충원·정시"
@@ -538,7 +546,7 @@
           ],
           tracks: [
             { name: "학생부교과 추천형", items: [["apply", "원서접수", "2026-09-07", "2026-09-09"], ["apply", "서류제출", "2026-09-07", "2026-09-10"], ["result", "합격자 발표", "2026-12-18", "2026-12-18"], ["register", "문서등록", "2026-12-21", "2026-12-23"]] },
-            { name: "학생부종합/특기자", items: [["apply", "원서접수 및 서류", "2026-09-07", "2026-09-10"], ["result", "1단계 발표", "2026-10-26", "2026-11-23"], ["exam", "면접시험", "2026-10-31", "2026-11-29"], ["result", "합격자 발표", "2026-12-18", "2026-12-18"], ["register", "문서등록", "2026-12-21", "2026-12-23"]] },
+            { name: "학생부종합/특기자", items: [["apply", "원서접수 및 서류", "2026-09-07", "2026-09-10"], ["result", "1단계 합격자 발표 17:00", "2026-11-16", "2026-11-16"], ["exam", "자연계열 면접", "2026-11-22", "2026-11-22"], ["result", "합격자 발표", "2026-12-18", "2026-12-18"], ["register", "문서등록", "2026-12-21", "2026-12-23"]] },
             { name: "논술전형", items: [["apply", "원서접수", "2026-09-07", "2026-09-09"], ["exam", "논술시험", "2026-10-10", "2026-10-10"], ["result", "합격자 발표", "2026-12-18", "2026-12-18"], ["register", "문서등록", "2026-12-21", "2026-12-23"]] }
           ]
         },
@@ -561,6 +569,20 @@
         }
       ];
 
+      const focusedData = [
+        { u: "서울대", plan: "일반전형", docs: ["지원서 인터넷 접수", "서류 온라인 업로드", "학교생활기록부 온라인 제공", "해당자 지원자격 증빙서류", "합격자 원본 서류 제출"], items: [["apply", "원서/서류", "2026-09-07", "2026-09-10"], ["result", "1단계 합격자 발표", "2026-11-20", "2026-11-27"], ["exam", "면접/구술", "2026-11-27", "2026-11-27"], ["result", "최종 합격자 발표", "2026-12-18", "2026-12-18"], ["register", "문서등록", "2026-12-21", "2026-12-23"]], tracks: [{ name: "서울대 일반전형", items: [["apply", "지원서 접수 및 서류", "2026-09-07", "2026-09-10"], ["result", "1단계 합격자 발표", "2026-11-20", "2026-11-27"], ["exam", "면접/구술", "2026-11-27", "2026-11-27"], ["result", "최종 합격자 발표", "2026-12-18", "2026-12-18"], ["register", "문서등록", "2026-12-21", "2026-12-23"]] }] },
+        { u: "연세대", plan: "활동우수형", docs: ["인터넷 원서접수", "서류 온라인 업로드", "학교생활기록부 온라인 제공 또는 업로드", "활동우수형 해당 제출서류", "기회균형/해당자 증빙서류"], items: [["apply", "원서접수 및 서류", "2026-09-07", "2026-09-10"], ["result", "1단계 합격자 발표 17:00", "2026-11-16", "2026-11-16"], ["exam", "자연계열 면접", "2026-11-22", "2026-11-22"], ["result", "최종 합격자 발표", "2026-12-18", "2026-12-18"], ["register", "문서등록", "2026-12-21", "2026-12-23"]], tracks: [{ name: "연세대 활동우수형", items: [["apply", "원서접수 및 서류", "2026-09-07", "2026-09-10"], ["result", "1단계 합격자 발표 17:00", "2026-11-16", "2026-11-16"], ["exam", "자연계열 면접", "2026-11-22", "2026-11-22"], ["result", "최종 합격자 발표", "2026-12-18", "2026-12-18"], ["register", "문서등록", "2026-12-21", "2026-12-23"]] }] },
+        { u: "고려대", plan: "학교추천", docs: ["입학원서 온라인 입력", "온라인 서류 업로드", "학교장추천 대상자 명단 입력 및 확인", "학교생활기록부 온라인 제공", "해당자 증빙서류"], items: [["apply", "원서접수", "2026-09-07", "2026-09-09"], ["apply", "서류 및 추천 입력", "2026-09-07", "2026-09-18"], ["result", "최초합격자 발표", "2026-12-18", "2026-12-18"], ["register", "문서등록", "2026-12-21", "2026-12-23"]], tracks: [{ name: "고려대 학교추천", items: [["apply", "원서접수", "2026-09-07", "2026-09-09"], ["apply", "서류 및 추천 입력", "2026-09-07", "2026-09-18"], ["result", "최초합격자 발표", "2026-12-18", "2026-12-18"], ["register", "문서등록", "2026-12-21", "2026-12-23"]] }] },
+        { u: "서강대", plan: "학생부교과(지역균형)", docs: ["인터넷 원서접수", "학교생활기록부 온라인 제공", "학교장 추천 확인", "학생부교과 해당 제출서류", "지원자격 관련 증빙서류"], items: [["apply", "원서/서류", "2026-09-08", "2026-09-11"], ["result", "최종 합격자 발표", "2026-12-18", "2026-12-18"], ["register", "문서등록", "2026-12-21", "2026-12-23"]], tracks: [{ name: "서강대 학생부교과(지역균형)", items: [["apply", "원서접수 및 서류", "2026-09-08", "2026-09-11"], ["result", "최종 합격자 발표", "2026-12-18", "2026-12-18"], ["register", "문서등록", "2026-12-21", "2026-12-23"]] }] },
+        { u: "성균관대", plan: "학생부교과", docs: ["인터넷 원서접수", "제출서류 온라인 업로드", "학교장 추천 명단", "학교생활기록부 온라인 제공", "해당자 증빙서류"], items: [["apply", "원서접수", "2026-09-08", "2026-09-11"], ["apply", "서류 및 추천", "2026-09-08", "2026-09-18"], ["result", "최종합격자 발표", "2026-12-18", "2026-12-18"], ["register", "문서등록", "2026-12-21", "2026-12-23"]], tracks: [{ name: "성균관대 학생부교과", items: [["apply", "원서접수", "2026-09-08", "2026-09-11"], ["apply", "서류 및 추천", "2026-09-08", "2026-09-18"], ["result", "최종합격자 발표", "2026-12-18", "2026-12-18"], ["register", "문서등록", "2026-12-21", "2026-12-23"]] }] },
+        { u: "한양대", plan: "학생부교과", docs: ["인터넷 원서접수", "제출서류 온라인 PDF 업로드", "추천형 학교장 추천 명단 입력", "학생부 대체서식 해당자 온라인 입력", "해당자 증빙서류"], items: [["apply", "원서접수", "2026-09-08", "2026-09-11"], ["apply", "서류/추천", "2026-09-08", "2026-09-18"], ["result", "최종합격자 발표", "2026-12-18", "2026-12-18"], ["register", "전자문서 등록", "2026-12-21", "2026-12-23"]], tracks: [{ name: "한양대 학생부교과", items: [["apply", "원서접수", "2026-09-08", "2026-09-11"], ["apply", "서류/추천", "2026-09-08", "2026-09-18"], ["result", "최종합격자 발표", "2026-12-18", "2026-12-18"], ["register", "전자문서 등록", "2026-12-21", "2026-12-23"]] }] },
+        { u: "KAIST", plan: "Early Admission 학교장추천", docs: ["입학지원서", "자기소개서 및 독서이력", "교사추천서", "학교장추천 대상자 입력", "학교생활기록부 NEIS 제공 동의"], items: [["apply", "지원서/자기소개서", "2026-09-01", "2026-09-09"], ["apply", "교사추천/학교장추천", "2026-09-10", "2026-09-18"], ["result", "최종합격자 발표", "2026-10-12", "2026-10-12"], ["register", "등록 프로그램 및 등록", "2026-10-29", "2026-11-06"]], tracks: [{ name: "KAIST Early Admission 학교장추천", items: [["apply", "지원서/자기소개서 작성", "2026-09-01", "2026-09-09"], ["apply", "교사추천/학교장추천 입력", "2026-09-10", "2026-09-18"], ["result", "최종합격자 발표", "2026-10-12", "2026-10-12"], ["register", "등록 프로그램 및 등록", "2026-10-29", "2026-11-06"]] }] },
+        { u: "POSTECH", plan: "기회균형/지역인재", docs: ["입학지원서 온라인 입력", "학교생활기록부 온라인 제공 또는 제출", "전형별 요구 입력자료", "지원자격 증빙서류", "최종합격자 원본/추가 서류"], items: [["apply", "원서 및 서류접수", "2026-09-08", "2026-09-10"], ["result", "1단계 합격자 발표", "2026-11-20", "2026-11-20"], ["exam", "면접", "2026-11-28", "2026-11-29"], ["result", "최종 합격자 발표", "2026-12-18", "2026-12-18"], ["register", "등록", "2026-12-22", "2026-12-29"]], tracks: [{ name: "POSTECH 기회균형/지역인재", items: [["apply", "원서 및 서류접수", "2026-09-08", "2026-09-10"], ["result", "1단계 합격자 발표", "2026-11-20", "2026-11-20"], ["exam", "면접", "2026-11-28", "2026-11-29"], ["result", "최종 합격자 발표", "2026-12-18", "2026-12-18"], ["register", "등록", "2026-12-22", "2026-12-29"]] }] },
+        { u: "GIST", plan: "학교장추천 수시", docs: ["입학원서 및 서류 온라인 제출", "학교생활기록부 NEIS 제공 동의", "지원서 입력 항목", "학교장추천 관련 입력", "해당자 자격 증빙서류"], items: [["apply", "원서접수 및 서류제출", "2026-09-07", "2026-09-11"], ["exam", "면접전형", "2026-10-22", "2026-10-23"], ["result", "최초 및 예비합격자 발표", "2026-12-18", "2026-12-18"], ["register", "최초합격자 등록", "2026-12-21", "2026-12-23"]], tracks: [{ name: "GIST 학교장추천 수시", items: [["apply", "원서접수 및 서류제출", "2026-09-07", "2026-09-11"], ["exam", "면접전형", "2026-10-22", "2026-10-23"], ["result", "최초 및 예비합격자 발표", "2026-12-18", "2026-12-18"], ["register", "최초합격자 등록", "2026-12-21", "2026-12-23"]] }] },
+        { u: "UNIST", plan: "수시 일반 무학과", docs: ["입학원서 온라인 입력", "자기소개서 온라인 입력", "학교생활기록부 또는 PDF 업로드", "해당자 증빙서류", "최종합격자 추가서류"], items: [["apply", "원서접수", "2026-09-03", "2026-09-10"], ["apply", "서류 업로드", "2026-09-03", "2026-09-11"], ["result", "최종 합격자 발표", "2026-12-18", "2026-12-18"], ["register", "등록", "2026-12-21", "2026-12-23"]], tracks: [{ name: "UNIST 수시 일반 무학과", items: [["apply", "원서접수", "2026-09-03", "2026-09-10"], ["apply", "서류 업로드", "2026-09-03", "2026-09-11"], ["result", "최종 합격자 발표", "2026-12-18", "2026-12-18"], ["register", "등록", "2026-12-21", "2026-12-23"]] }] },
+        { u: "DGIST", plan: "수시 일반 기초학부", docs: ["입학원서 온라인 입력", "학교생활기록부 또는 NEIS 제공 동의", "지원서 입력 항목", "해당자 지원자격 증빙서류", "합격자 등록 관련 서류"], items: [["apply", "원서 및 서류 제출", "2026-09-03", "2026-09-10"], ["result", "합격 발표", "2026-12-18", "2026-12-18"], ["register", "합격자 등록", "2026-12-21", "2026-12-23"]], tracks: [{ name: "DGIST 수시 일반 기초학부", items: [["apply", "원서 및 서류 제출", "2026-09-03", "2026-09-10"], ["result", "합격 발표", "2026-12-18", "2026-12-18"], ["register", "합격자 등록", "2026-12-21", "2026-12-23"]] }] },
+        { u: "KENTECH", plan: "수시 일반", docs: ["인터넷 원서접수", "학교생활기록부 온라인 제공 동의", "해당자 서류 등기우편 제출", "지원자격 증빙서류", "합격자 등록 관련 서류"], items: [["apply", "지원서 접수", "2026-09-07", "2026-09-11"], ["apply", "서류 제출", "2026-09-07", "2026-09-14"], ["result", "1단계 합격자 발표", "2026-11-20", "2026-11-20"], ["exam", "면접평가", "2026-11-30", "2026-11-30"], ["result", "합격자 발표", "2026-12-11", "2026-12-11"], ["register", "합격자 등록", "2026-12-21", "2026-12-23"]], tracks: [{ name: "KENTECH 수시 일반", items: [["apply", "지원서 접수", "2026-09-07", "2026-09-11"], ["apply", "서류 제출", "2026-09-07", "2026-09-14"], ["result", "1단계 합격자 발표", "2026-11-20", "2026-11-20"], ["exam", "면접평가", "2026-11-30", "2026-11-30"], ["result", "합격자 발표", "2026-12-11", "2026-12-11"], ["register", "합격자 등록", "2026-12-21", "2026-12-23"]] }] }
+      ];
       const svg = document.querySelector(".gantt-svg");
       const plot = document.querySelector(".plot");
       const tip = document.getElementById("admission-gantt-tip");
@@ -574,7 +596,7 @@
       const rangeText = (start, end) => start === end ? fmt.format(parse(start)) : `${fmt.format(parse(start))} - ${fmt.format(parse(end))}`;
       const margin = { left: 118, right: 28, top: 54, bottom: 42 };
       const width = 1120;
-      const height = 780;
+      const height = 850;
       const fixedStart = parse("2026-09-01");
       const fixedEnd = parse("2027-02-20");
       let domainStart = fixedStart;
@@ -605,12 +627,8 @@
       };
 
       const calculateDomain = (filter) => {
-        if (filter === "all") {
-          domainStart = fixedStart;
-          domainEnd = fixedEnd;
-          return;
-        }
-        const visible = data.flatMap((row) => visibleItems(row.items, filter));
+        const visible = focusedData.flatMap((row) => visibleItems(row.items, filter));
+
         if (!visible.length) {
           domainStart = fixedStart;
           domainEnd = fixedEnd;
@@ -669,7 +687,7 @@
         });
         plot.appendChild(make("line", { x1: margin.left, y1: margin.top, x2: width - margin.right, y2: margin.top, class: "axis" }));
 
-        data.forEach((row, i) => {
+        focusedData.forEach((row, i) => {
           const y = y0 + i * laneGap;
           plot.appendChild(make("line", { x1: margin.left, y1: y + 31, x2: width - margin.right, y2: y + 31, class: "lane-line" }));
           const label = make("text", { x: 12, y: y + 4, class: "lane-label" });
@@ -757,7 +775,7 @@
       const renderDetails = (filter = "all") => {
         detailTitle.textContent = `${categoryLabels[filter]} 상세 일정`;
         detailCards.replaceChildren();
-        data.forEach((row) => {
+        focusedData.forEach((row) => {
           const card = document.createElement("article");
           card.className = "card";
           card.id = `card-${row.u}`;
@@ -767,7 +785,7 @@
           button.className = "univ-button";
           button.type = "button";
           button.setAttribute("aria-expanded", String(selectedUniversity === row.u));
-          button.innerHTML = `<strong>${row.u}</strong><span class="chevron">›</span>`;
+          button.innerHTML = `<span class="univ-heading"><strong>${row.u}</strong><small>${row.plan}</small></span><span class="chevron">›</span>`;
           button.addEventListener("click", () => {
             selectedUniversity = selectedUniversity === row.u ? null : row.u;
             renderDetails(filter);
