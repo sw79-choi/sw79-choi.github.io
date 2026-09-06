@@ -1,0 +1,990 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>2027 수시 지원 실행표</title>
+  <style>
+    :root {
+      --ink: #17202a;
+      --muted: #68717d;
+      --line: #d8dee6;
+      --soft: #f5f7f9;
+      --paper: #ffffff;
+      --apply: #2368b5;
+      --exam: #d16a1d;
+      --result: #188160;
+      --register: #7652a6;
+      --extra: #596675;
+      --alert: #b94637;
+      --general: #1e6a89;
+      --science: #71528b;
+      --shadow: 0 8px 24px rgba(23, 32, 42, .07);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--soft);
+      font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+      line-height: 1.55;
+      letter-spacing: 0;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; }
+
+    .page {
+      width: min(1440px, 100%);
+      margin: 0 auto;
+      background: var(--paper);
+      min-height: 100vh;
+      box-shadow: var(--shadow);
+    }
+    .masthead {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: end;
+      padding: 34px 40px 24px;
+      border-bottom: 1px solid var(--line);
+    }
+    .eyebrow {
+      margin: 0 0 4px;
+      color: var(--apply);
+      font-size: 13px;
+      font-weight: 800;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 46px);
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+    .subtitle {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .mast-meta {
+      text-align: right;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .mast-meta strong {
+      display: block;
+      color: var(--ink);
+      font-size: 18px;
+    }
+
+    .decision-band {
+      padding: 18px 40px;
+      background: #fff8e8;
+      border-bottom: 1px solid #ecd9a8;
+    }
+    .decision-band h2 {
+      margin: 0 0 8px;
+      font-size: 17px;
+    }
+    .decision-band ul {
+      margin: 0;
+      padding-left: 20px;
+      color: #62490c;
+    }
+    .decision-band li + li { margin-top: 4px; }
+
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-bottom: 1px solid var(--line);
+    }
+    .stat {
+      padding: 18px 28px;
+      border-right: 1px solid var(--line);
+    }
+    .stat:last-child { border-right: 0; }
+    .stat-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .stat strong {
+      display: block;
+      margin-top: 2px;
+      font-size: 24px;
+    }
+    .stat strong.general { color: var(--general); }
+    .stat strong.science { color: var(--science); }
+    .stat strong.alert { color: var(--alert); }
+
+    .toolbar-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      padding: 14px 40px;
+      background: rgba(255, 255, 255, .96);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(10px);
+    }
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+    .filter-btn {
+      min-height: 40px;
+      padding: 8px 14px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--muted);
+      background: var(--paper);
+      font-weight: 750;
+      white-space: nowrap;
+    }
+    .filter-btn:hover { border-color: #9aa5b1; color: var(--ink); }
+    .filter-btn.active {
+      color: #fff;
+      border-color: var(--ink);
+      background: var(--ink);
+    }
+    .toolbar-spacer { flex: 1; }
+    .reset-btn {
+      border: 0;
+      color: var(--muted);
+      background: transparent;
+      font-size: 13px;
+      white-space: nowrap;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    main { padding-bottom: 64px; }
+    .band {
+      padding: 28px 40px;
+      border-bottom: 1px solid var(--line);
+    }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 20px;
+      margin-bottom: 16px;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: 22px;
+    }
+    .section-head p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .next-deadlines {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .deadline-item {
+      min-width: 0;
+      padding: 14px 16px;
+      border-right: 1px solid var(--line);
+    }
+    .deadline-item:last-child { border-right: 0; }
+    .deadline-date {
+      color: var(--alert);
+      font-size: 13px;
+      font-weight: 850;
+    }
+    .deadline-school {
+      margin-top: 4px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .deadline-title {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 18px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+    .swatch { width: 12px; height: 12px; border-radius: 2px; }
+    .swatch.apply { background: var(--apply); }
+    .swatch.exam { background: var(--exam); }
+    .swatch.result { background: var(--result); }
+    .swatch.register { background: var(--register); }
+    .swatch.extra { background: var(--extra); }
+
+    .chart-shell {
+      position: relative;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    #timeline { display: block; min-width: 1080px; }
+    .chart-note {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .group-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 18px;
+      margin: 30px 0 10px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--ink);
+    }
+    .group-title:first-child { margin-top: 0; }
+    .group-title h2 { margin: 0; font-size: 22px; }
+    .group-title span { color: var(--muted); font-size: 13px; }
+
+    .school-block {
+      scroll-margin-top: 82px;
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+    .school-block:first-of-type { border-top: 1px solid var(--line); }
+    .school-identity {
+      padding: 22px 24px 22px 0;
+      border-right: 1px solid var(--line);
+    }
+    .school-name {
+      margin: 0;
+      font-size: 23px;
+      line-height: 1.2;
+    }
+    .school-program {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .type-label {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 3px 7px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .type-label.general { color: var(--general); }
+    .type-label.science { color: var(--science); }
+    .source-link {
+      display: inline-block;
+      margin-top: 14px;
+      color: var(--apply);
+      font-size: 12px;
+      text-underline-offset: 3px;
+    }
+    .school-content {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(340px, .92fr);
+      gap: 26px;
+      padding: 22px 0 24px 28px;
+    }
+    .content-title {
+      margin: 0 0 10px;
+      font-size: 14px;
+    }
+    .schedule-list, .document-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .schedule-item {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: baseline;
+      min-height: 32px;
+      padding: 5px 0;
+      border-top: 1px solid #edf0f3;
+      font-size: 13px;
+    }
+    .schedule-item:first-child { border-top: 0; }
+    .kind-pill {
+      width: fit-content;
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .kind-pill.apply { background: var(--apply); }
+    .kind-pill.exam { background: var(--exam); }
+    .kind-pill.result { background: var(--result); }
+    .kind-pill.register { background: var(--register); }
+    .kind-pill.extra { background: var(--extra); }
+    .schedule-title { min-width: 0; font-weight: 700; }
+    .schedule-date {
+      color: var(--muted);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    .schedule-note {
+      grid-column: 2 / 4;
+      margin-top: -3px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .document-list { border-top: 1px solid #edf0f3; }
+    .document-item {
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr) auto;
+      gap: 9px;
+      align-items: start;
+      padding: 9px 0;
+      border-bottom: 1px solid #edf0f3;
+      font-size: 13px;
+    }
+    .doc-check {
+      width: 18px;
+      height: 18px;
+      margin: 1px 0 0;
+      accent-color: var(--result);
+    }
+    .document-item.done .doc-name {
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+    .doc-name { font-weight: 700; }
+    .doc-meta {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .doc-deadline {
+      color: var(--alert);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .plain-note {
+      margin: 10px 0 0;
+      padding-left: 10px;
+      border-left: 3px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .school-alert {
+      grid-column: 1 / -1;
+      margin: -4px 0 0;
+      padding: 10px 12px;
+      color: #6a3c00;
+      background: #fff7df;
+      border-left: 4px solid #d69b24;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    footer {
+      padding: 26px 40px 42px;
+      color: var(--muted);
+      background: #f8f9fb;
+      font-size: 12px;
+    }
+    footer p { margin: 4px 0; }
+
+    @media (max-width: 980px) {
+      .masthead { grid-template-columns: 1fr; }
+      .mast-meta { text-align: left; }
+      .summary-strip { grid-template-columns: repeat(2, 1fr); }
+      .stat:nth-child(2) { border-right: 0; }
+      .stat:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+      .next-deadlines { grid-template-columns: repeat(2, 1fr); }
+      .deadline-item:nth-child(2n) { border-right: 0; }
+      .deadline-item:nth-child(-n+4) { border-bottom: 1px solid var(--line); }
+      .deadline-item:last-child { grid-column: 1 / -1; }
+      .school-block { grid-template-columns: 190px 1fr; }
+      .school-content { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 700px) {
+      body { font-size: 16px; }
+      .page { box-shadow: none; }
+      .masthead { padding: 24px 18px 18px; gap: 10px; }
+      h1 { font-size: 30px; }
+      .subtitle { font-size: 14px; }
+      .decision-band { padding: 15px 18px; }
+      .decision-band li { font-size: 14px; }
+      .summary-strip { grid-template-columns: repeat(2, 1fr); }
+      .stat { padding: 14px 18px; }
+      .stat strong { font-size: 21px; }
+      .toolbar-wrap { padding: 10px 12px; }
+      .filter-btn { min-height: 44px; padding: 9px 13px; font-size: 14px; }
+      .band { padding: 24px 18px; }
+      .section-head { display: block; }
+      .legend { margin-top: 10px; }
+      .next-deadlines { display: block; }
+      .deadline-item {
+        display: grid;
+        grid-template-columns: 88px 82px minmax(0, 1fr);
+        gap: 8px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .deadline-item:last-child { border-bottom: 0; }
+      .deadline-school, .deadline-title { margin-top: 0; }
+      .deadline-title { white-space: normal; }
+      #timeline { min-width: 980px; }
+      .chart-note { font-size: 13px; }
+      .group-title { display: block; }
+      .group-title span { display: block; margin-top: 3px; }
+      .school-block { display: block; }
+      .school-identity {
+        padding: 20px 0 14px;
+        border-right: 0;
+        border-bottom: 1px solid #edf0f3;
+      }
+      .school-name { font-size: 24px; }
+      .school-program { font-size: 16px; line-height: 1.45; }
+      .school-content { padding: 17px 0 24px; gap: 22px; }
+      .content-title { font-size: 16px; }
+      .schedule-item {
+        grid-template-columns: 70px minmax(0, 1fr);
+        gap: 8px;
+        padding: 8px 0;
+        font-size: 15px;
+      }
+      .schedule-date {
+        grid-column: 2;
+        color: #4f5965;
+        font-size: 14px;
+        white-space: normal;
+      }
+      .schedule-note { grid-column: 2; font-size: 13px; }
+      .document-item {
+        grid-template-columns: 26px minmax(0, 1fr);
+        padding: 11px 0;
+        font-size: 15px;
+      }
+      .doc-check { width: 20px; height: 20px; }
+      .doc-deadline {
+        grid-column: 2;
+        font-size: 13px;
+        white-space: normal;
+      }
+      .doc-meta, .plain-note { font-size: 13px; }
+      footer { padding: 24px 18px 36px; font-size: 13px; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .page { width: 100%; box-shadow: none; }
+      .toolbar-wrap, .reset-btn { display: none; }
+      .masthead, .band, .decision-band, footer { padding-left: 16px; padding-right: 16px; }
+      .chart-shell { overflow: visible; }
+      #timeline { min-width: 0; width: 100%; }
+      .school-block { break-inside: avoid; }
+      .doc-check { appearance: none; border: 1px solid #555; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="masthead">
+      <div>
+        <p class="eyebrow">2027학년도 수시 최종 지원 실행표</p>
+        <h1>원서부터 등록까지, 열 장의 일정</h1>
+        <p class="subtitle">일반대학 6장 + 과학기술원 4장 · 지원 일정과 제출서류만 정리</p>
+      </div>
+      <div class="mast-meta">
+        최종 지원안 기준
+        <strong>2026. 9. 6.</strong>
+      </div>
+    </header>
+
+    <section class="decision-band" aria-labelledby="decision-title">
+      <h2 id="decision-title">원서 결제 전 최종 선택 2건</h2>
+      <ul>
+        <li><strong>성균관대 지능형소프트웨어학과</strong>: 탐구인재 10명 또는 융합인재 5명 중 하나를 선택해야 합니다. 탐구인재를 우선안으로 표시했습니다.</li>
+        <li><strong>DGIST 학교장추천전형</strong>: 반도체공학과 또는 기초학부 중 한 모집단위만 지원할 수 있습니다.</li>
+      </ul>
+    </section>
+
+    <section class="summary-strip" aria-label="지원 현황 요약">
+      <div class="stat"><span class="stat-label">전체 지원</span><strong>10장</strong></div>
+      <div class="stat"><span class="stat-label">일반대학</span><strong class="general">6장</strong></div>
+      <div class="stat"><span class="stat-label">과학기술원</span><strong class="science">4장</strong></div>
+      <div class="stat"><span class="stat-label">최종 선택 필요</span><strong class="alert">2건</strong></div>
+    </section>
+
+    <div class="toolbar-wrap">
+      <nav class="toolbar" aria-label="일정 유형 필터">
+        <button class="filter-btn active" data-filter="all" type="button">전체</button>
+        <button class="filter-btn" data-filter="apply" type="button">원서·서류</button>
+        <button class="filter-btn" data-filter="exam" type="button">면접</button>
+        <button class="filter-btn" data-filter="result" type="button">합격 발표</button>
+        <button class="filter-btn" data-filter="register" type="button">등록</button>
+        <button class="filter-btn" data-filter="extra" type="button">충원·후속서류</button>
+        <span class="toolbar-spacer"></span>
+        <button id="resetChecks" class="reset-btn" type="button">체크 초기화</button>
+      </nav>
+    </div>
+
+    <main>
+      <section class="band" aria-labelledby="next-title">
+        <div class="section-head">
+          <div>
+            <h2 id="next-title">가까운 마감</h2>
+            <p id="todayLabel">브라우저 날짜 기준으로 남은 일정을 표시합니다.</p>
+          </div>
+        </div>
+        <div id="nextDeadlines" class="next-deadlines"></div>
+      </section>
+
+      <section class="band" aria-labelledby="timeline-title">
+        <div class="section-head">
+          <div>
+            <h2 id="timeline-title">대학별 타임라인</h2>
+            <p>대학명을 누르면 아래 세부 일정으로 이동합니다.</p>
+          </div>
+          <div class="legend" aria-label="일정 색상 범례">
+            <span class="legend-item"><span class="swatch apply"></span>원서·서류</span>
+            <span class="legend-item"><span class="swatch exam"></span>면접</span>
+            <span class="legend-item"><span class="swatch result"></span>발표</span>
+            <span class="legend-item"><span class="swatch register"></span>등록</span>
+            <span class="legend-item"><span class="swatch extra"></span>충원·후속</span>
+          </div>
+        </div>
+        <div class="chart-shell">
+          <svg id="timeline" role="img" aria-label="2027학년도 수시 지원 일정 간트 차트"></svg>
+        </div>
+        <p class="chart-note">모바일에서는 차트를 좌우로 움직여 확인하세요. 선택한 유형에 맞춰 날짜 축이 자동으로 줄어듭니다.</p>
+      </section>
+
+      <section class="band" aria-labelledby="detail-title">
+        <div class="section-head">
+          <div>
+            <h2 id="detail-title">학교별 제출 실행표</h2>
+            <p>체크 상태는 이 브라우저에 저장됩니다.</p>
+          </div>
+        </div>
+        <div id="schoolDetails"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p><strong>기준 자료:</strong> 수시컨설팅 최종 지원안, 각 대학 2027학년도 수시 모집요강 및 전형계획.</p>
+      <p>학교생활기록부 온라인 제공에 동의하는 국내 고교 재학생을 기본 상황으로 정리했습니다. ‘해당자’ 서류는 본인의 지원자격과 학생부 온라인 제공 가능 여부에 따라 달라집니다.</p>
+      <p>접수 직전에는 반드시 각 입학처 원서접수 화면의 마감 시각과 제출 상태를 다시 확인하세요.</p>
+    </footer>
+  </div>
+
+  <script>
+    const schools = [
+      {
+        id: "snu", school: "서울대", group: "general", program: "일반전형 · 첨단융합학부",
+        source: "https://admission.snu.ac.kr/",
+        events: [
+          { kind: "apply", title: "입학지원서 접수", start: "2026-09-07T10:00", end: "2026-09-09T18:00", date: "9.7(월) 10:00 ~ 9.9(수) 18:00" },
+          { kind: "apply", title: "해당자 서류 온라인 제출", start: "2026-09-07T10:00", end: "2026-09-10T18:00", date: "9.7(월) 10:00 ~ 9.10(목) 18:00" },
+          { kind: "result", title: "1단계 합격자 발표", start: "2026-11-20T18:00", end: "2026-11-20T18:00", date: "11.20(금) 18:00 이후" },
+          { kind: "exam", title: "2단계 전형료 납부", start: "2026-11-23T10:00", end: "2026-11-24T18:00", date: "11.23(월) 10:00 ~ 11.24(화) 18:00" },
+          { kind: "exam", title: "면접 및 구술고사", start: "2026-11-27T00:00", end: "2026-11-27T23:59", date: "11.27(금)", note: "첨단융합학부 일반전형 기준" },
+          { kind: "result", title: "최종 합격자 발표", start: "2026-12-18T18:00", end: "2026-12-18T18:00", date: "12.18(금) 18:00 이후" },
+          { kind: "register", title: "합격자 문서등록", start: "2026-12-21T09:00", end: "2026-12-23T16:00", date: "12.21(월) 09:00 ~ 12.23(수) 16:00" },
+          { kind: "extra", title: "1·2차 충원 발표 및 등록", start: "2026-12-24T14:00", end: "2026-12-29T16:00", date: "12.24(목) ~ 12.29(화) 16:00" },
+          { kind: "register", title: "등록금 납부", start: "2027-02-10T09:00", end: "2027-02-12T16:00", date: "2027.2.10(수) 09:00 ~ 2.12(금) 16:00" },
+          { kind: "extra", title: "해당자 원본서류 제출", start: "2027-02-19T10:00", end: "2027-02-26T18:00", date: "2027.2.19(금) 10:00 ~ 2.26(금) 18:00" }
+        ],
+        docs: [
+          { name: "입학지원서", method: "온라인 원서접수", deadline: "9.9 18:00" },
+          { name: "학교생활기록부", method: "NEIS 온라인 제공 동의", deadline: "9.9 18:00" },
+          { name: "지원자격·학생부 대체 서류", method: "해당자만 온라인 업로드", deadline: "9.10 18:00", optional: true },
+          { name: "2단계 전형료", method: "1단계 합격자만 온라인 납부", deadline: "11.24 18:00", optional: true },
+          { name: "업로드 서류 원본", method: "해당 최종합격자만 제출", deadline: "2027.2.26 18:00", optional: true }
+        ],
+        note: "국내 고교 재학생이 학생부 온라인 제공에 동의하면 통상 별도 서류 업로드가 없습니다."
+      },
+      {
+        id: "yonsei", school: "연세대", group: "general", program: "학생부종합 활동우수형 · 기계공학부",
+        source: "https://admission.yonsei.ac.kr/seoul/",
+        events: [
+          { kind: "apply", title: "입학지원서 접수", start: "2026-09-07T10:00", end: "2026-09-09T17:00", date: "9.7(월) 10:00 ~ 9.9(수) 17:00" },
+          { kind: "apply", title: "해당자 서류 온라인 제출", start: "2026-09-07T10:00", end: "2026-09-10T17:00", date: "9.7(월) 10:00 ~ 9.10(목) 17:00" },
+          { kind: "result", title: "1단계 합격자 발표", start: "2026-11-16T17:00", end: "2026-11-16T17:00", date: "11.16(월) 17:00" },
+          { kind: "exam", title: "자연계열 면접", start: "2026-11-22T12:00", end: "2026-11-22T18:00", date: "11.22(일) 오후", note: "기계공학부 자연계열 기준" },
+          { kind: "result", title: "최종 합격자 발표", start: "2026-12-18T18:00", end: "2026-12-18T18:00", date: "12.18(금) 18:00" },
+          { kind: "register", title: "합격자 문서등록", start: "2026-12-21T10:00", end: "2026-12-23T16:00", date: "12.21(월) 10:00 ~ 12.23(수) 16:00" },
+          { kind: "extra", title: "충원 발표 및 등록", start: "2026-12-24T00:00", end: "2026-12-30T16:00", date: "12.24(목) ~ 12.30(수) 16:00" },
+          { kind: "register", title: "등록금 납부", start: "2027-02-10T00:00", end: "2027-02-12T16:00", date: "2027.2.10(수) ~ 2.12(금) 16:00" }
+        ],
+        docs: [
+          { name: "입학지원서", method: "온라인 원서접수", deadline: "9.9 17:00" },
+          { name: "학교생활기록부", method: "NEIS 온라인 제공 동의", deadline: "9.9 17:00" },
+          { name: "지원자격·학생부 대체 서류", method: "해당자만 온라인 업로드", deadline: "9.10 17:00", optional: true },
+          { name: "수험표와 신분증", method: "면접 당일 지참", deadline: "11.22 오후" },
+          { name: "업로드 서류 원본", method: "해당 최종합격자만 제출", deadline: "2027.2.5", optional: true }
+        ],
+        note: "활동우수형은 별도의 자기소개서나 활동증빙자료를 제출하지 않습니다."
+      },
+      {
+        id: "postech", school: "POSTECH", group: "general", program: "기회균형 지역인재전형 · 단일계열",
+        source: "https://adm-u.postech.ac.kr/entrance-exam/guide/",
+        events: [
+          { kind: "apply", title: "입학지원서 및 온라인 서류", start: "2026-09-08T10:00", end: "2026-09-10T18:00", date: "9.8(화) 10:00 ~ 9.10(목) 18:00" },
+          { kind: "apply", title: "지원자격 원본서류 발송", start: "2026-09-08T00:00", end: "2026-09-10T23:59", date: "9.10(목) 국내우편 소인까지", note: "지역인재 지원자격 증빙 해당" },
+          { kind: "result", title: "최종 합격자 발표", start: "2026-12-18T10:00", end: "2026-12-18T10:00", date: "12.18(금) 10:00" },
+          { kind: "register", title: "합격자 등록", start: "2026-12-21T00:00", end: "2026-12-23T16:00", date: "12.21(월) ~ 12.23(수) 16:00" },
+          { kind: "extra", title: "충원 합격 통보·등록", start: "2026-12-24T00:00", end: "2026-12-30T16:00", date: "12.24(목) ~ 12.30(수) 16:00" }
+        ],
+        docs: [
+          { name: "입학지원서", method: "온라인 원서접수", deadline: "9.10 18:00" },
+          { name: "학교생활기록부", method: "NEIS 온라인 제공 동의", deadline: "9.10 18:00" },
+          { name: "기회균형 지역인재 지원자격 확인서", method: "요강 양식 작성 후 제출", deadline: "9.10" },
+          { name: "지역인재 지원자격 증빙 원본", method: "등기우편, 요강 지정 서류", deadline: "9.10 우편소인" }
+        ],
+        note: "기회균형 지역인재전형은 서류평가 100%로 별도 면접 일정이 없습니다. 지원자격 원본의 종류는 원서접수 전 요강 표와 반드시 대조하세요."
+      },
+      {
+        id: "korea", school: "고려대", group: "general", program: "학생부교과 학교추천전형 · 기계공학부",
+        source: "https://oku.korea.ac.kr/",
+        events: [
+          { kind: "apply", title: "입학지원서 접수", start: "2026-09-07T10:00", end: "2026-09-09T17:00", date: "9.7(월) 10:00 ~ 9.9(수) 17:00" },
+          { kind: "apply", title: "해당자 온라인 서류", start: "2026-09-07T10:00", end: "2026-09-09T18:00", date: "9.7(월) 10:00 ~ 9.9(수) 18:00" },
+          { kind: "apply", title: "학교 추천대상자 입력·확인", start: "2026-09-14T09:00", end: "2026-09-18T18:00", date: "9.14(월) 09:00 ~ 9.18(금) 18:00", note: "고교 담당교사 처리" },
+          { kind: "result", title: "최종 합격자 발표", start: "2026-12-18T17:00", end: "2026-12-18T17:00", date: "12.18(금) 17:00" },
+          { kind: "register", title: "합격자 문서등록", start: "2026-12-21T10:00", end: "2026-12-23T14:00", date: "12.21(월) 10:00 ~ 12.23(수) 14:00" },
+          { kind: "extra", title: "1~6차 충원 및 등록", start: "2026-12-23T21:00", end: "2026-12-30T10:00", date: "12.23(수) 21:00 ~ 12.30(수) 10:00" },
+          { kind: "register", title: "등록금 납부", start: "2027-02-15T00:00", end: "2027-02-16T23:59", date: "2027.2.15(월) ~ 2.16(화)" },
+          { kind: "extra", title: "해당자 원본서류 제출", start: "2027-02-17T00:00", end: "2027-02-19T23:59", date: "2027.2.19(금)까지" }
+        ],
+        docs: [
+          { name: "입학지원서", method: "온라인 원서접수", deadline: "9.9 17:00" },
+          { name: "학교생활기록부", method: "NEIS 온라인 제공 동의", deadline: "9.9 17:00" },
+          { name: "학교 추천대상자 명단", method: "고교 담당교사가 입력·확인", deadline: "9.18 18:00" },
+          { name: "지원자격 관련 원본", method: "해당자만 우편 제출", deadline: "9.10 국내우편 소인", optional: true },
+          { name: "업로드 서류 원본", method: "해당 최종합격자만 제출", deadline: "2027.2.19", optional: true }
+        ],
+        note: "국내 고교 재학생은 통상 지원자 개인이 별도로 제출할 자격서류가 없습니다. 학교의 추천대상자 입력 완료 여부를 꼭 확인하세요."
+      },
+      {
+        id: "skku", school: "성균관대", group: "general", program: "학생부종합 탐구인재(우선안) · 지능형소프트웨어학과",
+        source: "https://admission.skku.edu/",
+        alert: "탐구인재 10명과 융합인재 5명 중 하나를 선택해야 합니다. 융합인재 선택 시 수능최저가 적용되므로 원서 결제 전에 최종 확인하세요.",
+        events: [
+          { kind: "apply", title: "입학지원서 접수", start: "2026-09-08T10:00", end: "2026-09-11T18:00", date: "9.8(화) 10:00 ~ 9.11(금) 18:00" },
+          { kind: "apply", title: "해당자 서류 온라인 제출", start: "2026-09-08T10:00", end: "2026-09-12T14:00", date: "9.8(화) 10:00 ~ 9.12(토) 14:00" },
+          { kind: "result", title: "최종 합격자 발표", start: "2026-12-18T00:00", end: "2026-12-18T23:59", date: "12.18(금) 이전" },
+          { kind: "register", title: "합격자 문서등록", start: "2026-12-21T10:00", end: "2026-12-23T16:00", date: "12.21(월) 10:00 ~ 12.23(수) 16:00" },
+          { kind: "extra", title: "충원 발표 및 등록", start: "2026-12-24T00:00", end: "2026-12-30T16:00", date: "12.24(목) ~ 12.30(수) 16:00" },
+          { kind: "register", title: "등록금 납부", start: "2027-02-10T00:00", end: "2027-02-12T16:00", date: "2027.2.10(수) ~ 2.12(금) 16:00" }
+        ],
+        docs: [
+          { name: "입학지원서", method: "온라인 원서접수", deadline: "9.11 18:00" },
+          { name: "학교생활기록부", method: "NEIS 온라인 제공 동의", deadline: "9.11 18:00" },
+          { name: "학생부 대체·지원자격 서류", method: "해당자만 온라인 업로드", deadline: "9.12 14:00", optional: true }
+        ],
+        note: "국내 고교 재학생의 탐구인재·융합인재 지원은 별도 자기소개서가 없고, 통상 제출서류도 없습니다."
+      },
+      {
+        id: "hanyang", school: "한양대", group: "general", program: "학생부교과 추천형 · 기계공학부",
+        source: "https://go.hanyang.ac.kr/",
+        events: [
+          { kind: "apply", title: "입학지원서 접수", start: "2026-09-08T10:00", end: "2026-09-11T18:00", date: "9.8(화) 10:00 ~ 9.11(금) 18:00" },
+          { kind: "apply", title: "해당자 PDF 서류 업로드", start: "2026-09-08T10:00", end: "2026-09-14T23:59", date: "9.8(화) ~ 9.14(월)", note: "일반 국내고 재학생은 통상 해당 없음" },
+          { kind: "apply", title: "학교 추천대상자 입력", start: "2026-09-14T00:00", end: "2026-09-18T23:59", date: "9.14(월) ~ 9.18(금)", note: "고교 담당교사 처리" },
+          { kind: "result", title: "최종 합격자 발표", start: "2026-12-18T00:00", end: "2026-12-18T23:59", date: "12.18(금) 예정" },
+          { kind: "register", title: "합격자 문서등록", start: "2026-12-21T00:00", end: "2026-12-23T16:00", date: "12.21(월) ~ 12.23(수) 16:00" },
+          { kind: "extra", title: "충원 발표 및 등록", start: "2026-12-24T00:00", end: "2026-12-30T16:00", date: "12.24(목) ~ 12.30(수) 16:00" },
+          { kind: "register", title: "등록금 납부", start: "2027-02-10T00:00", end: "2027-02-12T23:59", date: "2027.2.10(수) ~ 2.12(금)" }
+        ],
+        docs: [
+          { name: "입학지원서", method: "온라인 원서접수", deadline: "9.11 18:00" },
+          { name: "학교생활기록부", method: "NEIS 온라인 제공 동의", deadline: "9.11 18:00" },
+          { name: "학교 추천대상자 명단", method: "고교 담당교사가 입력", deadline: "9.18" },
+          { name: "학생부 대체·지원자격 서류", method: "해당자만 PDF 업로드", deadline: "9.14", optional: true }
+        ],
+        note: "학생부교과 추천형은 학생부 외 별도 자기소개서가 없습니다. 추천대상자 입력 완료 여부를 학교에 확인하세요."
+      },
+      {
+        id: "kaist", school: "KAIST", group: "science", program: "Early Admission 학교장추천전형",
+        source: "https://admission.kaist.ac.kr/",
+        events: [
+          { kind: "apply", title: "지원서·자소서·독서이력·서류", start: "2026-09-01T09:00", end: "2026-09-09T18:00", date: "9.1(화) ~ 9.9(수) 18:00" },
+          { kind: "apply", title: "교사추천서 입력", start: "2026-09-10T09:00", end: "2026-09-18T18:00", date: "9.10(목) ~ 9.18(금) 18:00", note: "선택 최대 2건, 제출 시 담임교사 추천 필수" },
+          { kind: "apply", title: "학교장추천 대상자 입력", start: "2026-09-14T09:00", end: "2026-09-18T18:00", date: "9.14(월) ~ 9.18(금) 18:00", note: "고교 담당교사 처리" },
+          { kind: "result", title: "최종 합격자 발표", start: "2026-10-12T10:00", end: "2026-10-12T10:00", date: "10.12(월) 10:00" },
+          { kind: "register", title: "등록프로그램", start: "2026-10-29T00:00", end: "2026-11-04T23:59", date: "10.29(목) ~ 11.4(수) 중 지정 1일" },
+          { kind: "register", title: "합격자 등록", start: "2026-10-29T00:00", end: "2026-11-06T18:00", date: "10.29(목) ~ 11.6(금) 18:00" },
+          { kind: "extra", title: "최종합격자 추가서류", start: "2027-01-12T00:00", end: "2027-01-15T18:00", date: "2027.1.12(화) ~ 1.15(금) 18:00 도착" }
+        ],
+        docs: [
+          { name: "입학지원서", method: "온라인 입력", deadline: "9.9 18:00" },
+          { name: "자기소개서 4문항", method: "온라인 입력", deadline: "9.9 18:00" },
+          { name: "독서이력", method: "온라인 입력", deadline: "9.9 18:00" },
+          { name: "학교생활기록부", method: "NEIS 활용 동의 필수", deadline: "9.9 18:00" },
+          { name: "학교장추천 대상자 명단", method: "고교 담당교사가 입력", deadline: "9.18 18:00" },
+          { name: "교사추천서", method: "선택, 최대 2건", deadline: "9.18 18:00", optional: true },
+          { name: "자소서 증빙자료", method: "선택, 총 3건·건당 3쪽", deadline: "9.9 18:00", optional: true },
+          { name: "6월 모의평가 성적표", method: "선택, PDF 업로드", deadline: "9.9 18:00", optional: true },
+          { name: "최종 학기 포함 학생부 등 원본", method: "최종합격자 제출", deadline: "2027.1.15 18:00 도착" }
+        ],
+        note: "학교생활기록부 NEIS 활용 동의는 필수입니다. 등록프로그램 불참 시 합격이 취소될 수 있습니다."
+      },
+      {
+        id: "unist", school: "UNIST", group: "science", program: "수시 일반전형 · 이공계열(무학과)",
+        source: "https://adm-u.unist.ac.kr/",
+        events: [
+          { kind: "apply", title: "입학지원서 접수", start: "2026-09-03T09:00", end: "2026-09-10T18:00", date: "9.3(목) 09:00 ~ 9.10(목) 18:00" },
+          { kind: "apply", title: "자소서·해당자 서류", start: "2026-09-03T09:00", end: "2026-09-11T18:00", date: "9.3(목) 09:00 ~ 9.11(금) 18:00" },
+          { kind: "result", title: "최종 합격자 발표", start: "2026-12-18T00:00", end: "2026-12-18T23:59", date: "12.18(금)까지" },
+          { kind: "register", title: "합격자 문서등록", start: "2026-12-21T00:00", end: "2026-12-23T16:00", date: "12.21(월) ~ 12.23(수) 16:00" },
+          { kind: "extra", title: "충원 합격 통보", start: "2026-12-24T00:00", end: "2026-12-29T18:00", date: "12.24(목) ~ 12.29(화) 18:00" },
+          { kind: "extra", title: "충원 합격자 등록", start: "2026-12-24T00:00", end: "2026-12-30T16:00", date: "12.30(수) 16:00까지" }
+        ],
+        docs: [
+          { name: "입학지원서", method: "온라인 원서접수", deadline: "9.10 18:00" },
+          { name: "자기소개서", method: "온라인 입력", deadline: "9.11 18:00" },
+          { name: "학교생활기록부", method: "NEIS 온라인 제공 동의", deadline: "9.10 18:00" },
+          { name: "학생부 대체·지원자격 서류", method: "해당자만 온라인 제출", deadline: "9.11 18:00", optional: true }
+        ],
+        note: "이공계열 무학과 지원안입니다. 별도 면접 없이 서류평가로 선발합니다."
+      },
+      {
+        id: "gist", school: "GIST", group: "science", program: "수시 일반전형 · 반도체공학과",
+        source: "https://www.gist.ac.kr/uadm/",
+        events: [
+          { kind: "apply", title: "원서·자소서·추천서·서류", start: "2026-09-07T09:00", end: "2026-09-11T18:00", date: "9.7(월) 09:00 ~ 9.11(금) 18:00" },
+          { kind: "result", title: "1단계 합격자 발표", start: "2026-10-15T18:00", end: "2026-10-15T18:00", date: "10.15(목) 18:00" },
+          { kind: "exam", title: "면접평가", start: "2026-10-22T00:00", end: "2026-10-23T23:59", date: "10.22(목) ~ 10.23(금)", note: "개인별 면접일·시간 별도 안내" },
+          { kind: "result", title: "최종 합격자 발표", start: "2026-12-18T18:00", end: "2026-12-18T18:00", date: "12.18(금) 18:00" },
+          { kind: "register", title: "합격자 등록", start: "2026-12-21T00:00", end: "2026-12-23T23:59", date: "12.21(월) ~ 12.23(수)" },
+          { kind: "extra", title: "충원 발표 및 등록", start: "2026-12-24T00:00", end: "2026-12-30T22:00", date: "12.24(목) ~ 12.30(수) 22:00" }
+        ],
+        docs: [
+          { name: "입학지원서", method: "온라인 원서접수", deadline: "9.11 18:00" },
+          { name: "자기소개서", method: "온라인 입력", deadline: "9.11 18:00" },
+          { name: "학교생활기록부", method: "NEIS 온라인 제공 동의", deadline: "9.11 18:00" },
+          { name: "교사추천서", method: "추천인이 온라인 입력", deadline: "9.11 18:00" },
+          { name: "수험표와 신분증", method: "면접 당일 지참", deadline: "10.22~10.23" }
+        ],
+        note: "일반전형 반도체공학과 지원안입니다. 학교장추천이 아니라 교사추천서 제출 여부와 완료 상태를 확인해야 합니다."
+      },
+      {
+        id: "dgist", school: "DGIST", group: "science", program: "수시 학교장추천전형 · 모집단위 선택 필요",
+        source: "https://www.dgist.ac.kr/adm/",
+        alert: "학교장추천전형에서 반도체공학과와 기초학부를 동시에 선택할 수 없습니다. 한 모집단위를 확정한 뒤 원서를 결제하세요.",
+        events: [
+          { kind: "apply", title: "원서·자소서·학생부", start: "2026-09-03T09:00", end: "2026-09-10T18:00", date: "9.3(목) 09:00 ~ 9.10(목) 18:00" },
+          { kind: "apply", title: "학교추천·교사추천 입력", start: "2026-09-03T09:00", end: "2026-09-16T18:00", date: "9.3(목) ~ 9.16(수) 18:00", note: "고교·추천인 입력 완료 확인" },
+          { kind: "result", title: "최종 합격자 발표", start: "2026-12-18T00:00", end: "2026-12-18T23:59", date: "12.18(금)" },
+          { kind: "register", title: "합격자 등록", start: "2026-12-21T09:00", end: "2026-12-23T16:00", date: "12.21(월) 09:00 ~ 12.23(수) 16:00" },
+          { kind: "extra", title: "충원 발표 및 등록", start: "2026-12-24T00:00", end: "2026-12-30T16:00", date: "12.24(목) ~ 12.30(수) 16:00" }
+        ],
+        docs: [
+          { name: "입학지원서", method: "온라인 원서접수", deadline: "9.10 18:00" },
+          { name: "자기소개서", method: "온라인 입력", deadline: "9.10 18:00" },
+          { name: "학교생활기록부", method: "NEIS 온라인 제공 동의", deadline: "9.10 18:00" },
+          { name: "학교장추천 대상자 확인", method: "고교 담당교사 처리", deadline: "9.16 18:00" },
+          { name: "교사추천서", method: "추천인이 온라인 입력", deadline: "9.16 18:00" }
+        ],
+        note: "학교장추천전형은 별도 면접 없이 서류평가로 선발합니다. 추천 입력은 지원자가 직접 완료할 수 없으므로 학교와 확인이 필요합니다."
+      }
+    ];
+
+    const kindNames = { apply: "원서·서류", exam: "면접", result: "발표", register: "등록", extra: "충원·후속" };
+    const kindColors = { apply: "#2368b5", exam: "#d16a1d", result: "#188160", register: "#7652a6", extra: "#596675" };
+    let activeFilter = "all";
+
+    const parseDate = value => new Date(value);
+    const dateKey = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const escapeHtml = value => String(value).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+
+    function renderNextDeadlines() {
+      const host = document.getElementById("nextDeadlines");
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      document.getElementById("todayLabel").textContent = `${today.getFullYear()}.${today.getMonth() + 1}.${today.getDate()} 기준, 종료되지 않은 일정입니다.`;
+
+      const events = schools.flatMap(s => s.events.map(e => ({ ...e, school: s.school })))
+        .filter(e => parseDate(e.end) >= today)
+        .sort((a, b) => parseDate(a.end) - parseDate(b.end))
+        .slice(0, 5);
+
+      if (!events.length) {
+        host.innerHTML = '<div class="deadline-item"><div class="deadline-title">표시할 남은 일정이 없습니다.</div></div>';
+        return;
+      }
+      host.innerHTML = events.map(e => {
+        const end = parseDate(e.end);
+        const diff = Math.ceil((end - today) / 86400000);
+        const label = diff === 0 ? "오늘" : diff === 1 ? "내일" : `D-${diff}`;
+        return `<div class="deadline-item"><div class="deadline-date">${label} · ${end.getMonth() + 1}.${end.getDate()}</div><div class="deadline-school">${escapeHtml(e.school)}</div><div class="deadline-title" title="${escapeHtml(e.title)}">${escapeHtml(e.title)}</div></div>`;
+      }).join("");
+    }
+
+    function renderDetails() {
+      const host = document.getElementById("schoolDetails");
+      const groups = [
+        { key: "general", title: "일반대학 6장", caption: "서울대 · 연세대 · POSTECH · 고려대 · 성균관대 · 한양대" },
+        { key: "science", title: "과학기술원 4장", caption: "KAIST · UNIST · GIST · DGIST" }
+      ];
+      host.innerHTML = groups.map(group => {
+        const items = schools.filter(s => s.group === group.key).map(s => {
+          const events = s.events.filter(e => activeFilter === "all" || e.kind === activeFilter);
+          const eventHtml = events.length ? events.map(e => `
+            <li class="schedule-item">
+              <span class="kind-pill ${e.kind}">${kindNames[e.kind]}</span>
+              <span class="schedule-title">${escapeHtml(e.title)}</span>
+              <span class="schedule-date">${escapeHtml(e.date)}</span>
+              ${e.note ? `<span class="schedule-note">${escapeHtml(e.note)}</span>` : ""}
+            </li>`).join("") : '<li class="schedule-item"><span class="schedule-title">선택한 유형의 일정이 없습니다.</span></li>';
+
+          const docs = s.docs.map((d, index) => {
+            const key = `apply2027:${s.id}:${index}`;
+            const checked = localStorage.getItem(key) === "1";
+            return `<li class="document-item${checked ? " done" : ""}">
+              <input class="doc-check" type="checkbox" data-key="${key}" ${checked ? "checked" : ""} aria-label="${escapeHtml(d.name)} 완료">
+              <div><div class="doc-name">${escapeHtml(d.name)}${d.optional ? " (해당자/선택)" : ""}</div><div class="doc-meta">${escapeHtml(d.method)}</div></div>
+              <span class="doc-deadline">${escapeHtml(d.deadline)}</span>
+            </li>`;
+          }).join("");
+
+          return `<article class="school-block" id="school-${s.id}">
+            <div class="school-identity">
+              <h3 class="school-name">${escapeHtml(s.school)}</h3>
+              <p class="school-program">${escapeHtml(s.program)}</p>
+              <span class="type-label ${group.key}">${group.key === "general" ? "일반대학" : "과학기술원"}</span><br>
+              <a class="source-link" href="${s.source}" target="_blank" rel="noopener">공식 입학처 확인</a>
+            </div>
+            <div class="school-content">
+              ${s.alert ? `<div class="school-alert">${escapeHtml(s.alert)}</div>` : ""}
+              <div>
+                <h4 class="content-title">일정</h4>
+                <ul class="schedule-list">${eventHtml}</ul>
+              </div>
+              <div>
+                <h4 class="content-title">제출·확인 목록</h4>
+                <ul class="document-list">${docs}</ul>
+                <p class="plain-note">${escapeHtml(s.note)}</p>
+              </div>
+            </div>
+          </article>`;
+        }).join("");
+        return `<div class="group-title"><h2>${group.title}</h2><span>${group.caption}</span></div>${items}`;
+      }).join("");
+
+      document.querySelectorAll(".doc-check").forEach(input => {
+        input.addEventListener("change", () => {
+          localStorage.setItem(input.dataset.key, input.checked ? "1" : "0");
+          input.closest(".document-item").classList.toggle("done", input.checked);
+        });
+      });
+    }
+
+    function renderTimeline() {
+      const svg = document.getElementById("timeline");
+      const visibleEvents = schools.flatMap((s, row) => s.events
+        .filter(e => activeFilter === "all" || e.kind === activeFilter)
+        .map(e => ({ ...e, row, schoolId: s.id })));
+
+      if (!visibleEvents.length) return;
+      const rawMinDate = new Date(Math.min(...visibleEvents.map(e => parseDate(e.start))));
+      const rawMaxDate = new Date(Math.max(...visibleEvents.map(e => parseDate(e.end))));
+      let minDate = new Date(rawMinDate);
+      let maxDate = new Date(rawMaxDate);
+      minDate = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate() - 2);
+      maxDate = new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate() + 3);
+
+      const width = Math.max(1080, svg.parentElement.clientWidth || 1080);
+      const labelWidth = 170;
+      const rightPad = 20;
+      const top = 58;
+      const rowHeight = 50;
+      const height = top + schools.length * rowHeight + 24;
+      const plotWidth = width - labelWidth - rightPad;
+      const totalMs = maxDate - minDate || 86400000;
+      const xFor = date => labelWidth + ((parseDate(date) - minDate) / totalMs) * plotWidth;
+
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      svg.setAttribute("width", width);
+      svg.setAttribute("height", height);
+
+      const months = [new Date(rawMinDate)];
+      let cursor = new Date(rawMinDate.getFullYear(), rawMinDate.getMonth() + 1, 1);
+      while (cursor <= rawMaxDate) {
+        months.push(new Date(cursor));
+        cursor = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
+      }
+
+      let markup = `<rect width="${width}" height="${height}" fill="#fff"/>`;
+      months.forEach(d => {
+        const x = xFor(d.toISOString());
+        markup += `<line x1="${x}" y1="32" x2="${x}" y2="${height}" stroke="#d8dee6" stroke-width="1"/>`;
+        markup += `<text x="${x + 6}" y="22" fill="#68717d" font-size="12" font-weight="700">${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}</text>`;
+      });
+
+      schools.forEach((s, row) => {
+        const y = top + row * rowHeight;
+        markup += `<rect x="0" y="${y}" width="${width}" height="${rowHeight}" fill="${row % 2 ? "#fbfcfd" : "#fff"}"/>`;
+        markup += `<line x1="0" y1="${y + rowHeight}" x2="${width}" y2="${y + rowHeight}" stroke="#edf0f3"/>`;
+        markup += `<a href="#school-${s.id}"><text x="14" y="${y + 29}" fill="#17202a" font-size="14" font-weight="800" style="cursor:pointer">${escapeHtml(s.school)}</text></a>`;
+      });
+      markup += `<line x1="${labelWidth}" y1="0" x2="${labelWidth}" y2="${height}" stroke="#bfc7d1"/>`;
+
+      visibleEvents.forEach((e, index) => {
+        const y = top + e.row * rowHeight + 12;
+        const x1 = xFor(e.start);
+        const x2 = xFor(e.end);
+        const actualWidth = Math.max(7, x2 - x1);
+        const color = kindColors[e.kind];
+        const label = e.title.length > 11 ? `${e.title.slice(0, 11)}…` : e.title;
+        markup += `<g tabindex="0" aria-label="${escapeHtml(schools[e.row].school)} ${escapeHtml(e.title)} ${escapeHtml(e.date)}">
+          <title>${escapeHtml(schools[e.row].school)} · ${escapeHtml(e.title)} · ${escapeHtml(e.date)}</title>
+          <rect x="${x1}" y="${y}" width="${actualWidth}" height="26" rx="3" fill="${color}" opacity=".92"/>
+          ${actualWidth > 66 ? `<text x="${x1 + 6}" y="${y + 18}" fill="#fff" font-size="10" font-weight="750">${escapeHtml(label)}</text>` : ""}
+        </g>`;
+      });
+
+      const today = new Date();
+      if (today >= minDate && today <= maxDate) {
+        const tx = xFor(today.toISOString());
+        markup += `<line x1="${tx}" y1="32" x2="${tx}" y2="${height}" stroke="#b94637" stroke-width="2" stroke-dasharray="4 4"/><text x="${tx + 5}" y="43" fill="#b94637" font-size="10" font-weight="800">오늘</text>`;
+      }
+      svg.innerHTML = markup;
+    }
+
+    function setFilter(filter) {
+      activeFilter = filter;
+      document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.filter === filter));
+      renderTimeline();
+      renderDetails();
+    }
+
+    document.querySelectorAll(".filter-btn").forEach(btn => btn.addEventListener("click", () => setFilter(btn.dataset.filter)));
+    document.getElementById("resetChecks").addEventListener("click", () => {
+      Object.keys(localStorage).filter(key => key.startsWith("apply2027:")).forEach(key => localStorage.removeItem(key));
+      renderDetails();
+    });
+    window.addEventListener("resize", () => renderTimeline());
+
+    renderNextDeadlines();
+    renderDetails();
+    renderTimeline();
+  </script>
+</body>
+</html>
