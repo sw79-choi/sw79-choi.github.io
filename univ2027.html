@@ -325,6 +325,35 @@
     }
     .school-competition strong { display: block; margin-top: 2px; color: #0d6b55; font-size: 21px; }
     .school-competition span:last-child { color: var(--muted); font-size: 12px; }
+    .score-overview { border-top: 1px solid var(--line); }
+    .score-row {
+      display: grid;
+      grid-template-columns: 120px minmax(260px, 1fr) 150px 160px;
+      align-items: center;
+      min-height: 52px;
+      border-bottom: 1px solid var(--line);
+    }
+    .score-row.header {
+      min-height: 38px;
+      color: var(--muted);
+      background: #f8f9fb;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .score-cell { min-width: 0; padding: 9px 12px; }
+    .score-school { font-weight: 850; }
+    .score-program { color: #4f5965; font-size: 13px; }
+    .score-number { text-align: right; font-size: 16px; font-weight: 850; font-variant-numeric: tabular-nums; }
+    .score-mobile-label { display: none; }
+    .school-score {
+      margin-top: 9px;
+      padding: 10px 12px;
+      border-left: 3px solid var(--apply);
+      background: #f3f7fb;
+      color: #35506c;
+      font-size: 12px;
+    }
+    .school-score strong { color: var(--ink); font-size: 16px; }
 
     .legend {
       display: flex;
@@ -544,6 +573,7 @@
       .deadline-item:last-child { grid-column: 1 / -1; }
       .application-row { grid-template-columns: 90px minmax(190px, 1fr) 160px 220px; }
       .competition-row { grid-template-columns: 90px minmax(220px, 1fr) 70px 84px 102px 88px; }
+      .score-row { grid-template-columns: 90px minmax(220px, 1fr) 130px 140px; }
       .school-block { grid-template-columns: 190px 1fr; }
       .school-content { grid-template-columns: 1fr; }
     }
@@ -611,6 +641,21 @@
       .competition-ratio-cell { grid-column: 2; grid-row: 1 / span 3; align-self: center; }
       .competition-ratio { font-size: 19px; }
       .competition-source-cell { grid-column: 1 / -1; margin-top: 4px; }
+      .score-row,
+      .score-row.header {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 2px 14px;
+        padding: 12px 0;
+        background: #fff;
+      }
+      .score-row.header { display: none; }
+      .score-cell { padding: 1px 0; }
+      .score-school { grid-column: 1; font-size: 17px; }
+      .score-program { grid-column: 1 / -1; font-size: 14px; }
+      .score-number { grid-column: 2; font-size: 15px; }
+      .score-number.score-points { grid-row: 1; }
+      .score-number.score-grade { grid-column: 1 / -1; grid-row: 3; margin-top: 4px; text-align: left; color: #35506c; }
+      .score-mobile-label { display: inline; margin-right: 6px; color: var(--muted); font-size: 12px; font-weight: 700; }
       #timeline { min-width: 980px; }
       .chart-note { font-size: 13px; }
       .group-title { display: block; }
@@ -702,7 +747,6 @@
     <div class="toolbar-wrap">
       <nav class="toolbar" aria-label="일정 유형 필터">
         <button class="filter-btn active" data-filter="all" type="button">전체</button>
-        <button class="filter-btn" data-filter="apply" type="button">원서·서류</button>
         <button class="filter-btn" data-filter="exam" type="button">면접</button>
         <button class="filter-btn" data-filter="result" type="button">합격 발표</button>
         <button class="filter-btn" data-filter="register" type="button">등록</button>
@@ -744,14 +788,23 @@
         <p class="competition-note">2026.9.11 확인. 진학어플라이·유웨이어플라이 최종 경쟁률과 대학 입학처 공식 최종 자료를 기준으로 열 곳 모두 확인했습니다.</p>
       </section>
 
+      <section class="band" aria-labelledby="score-title">
+        <div class="section-head">
+          <div>
+            <h2 id="score-title">지원 전형 환산 성적</h2>
+            <p>제공된 성적표와 현재 지원 목록이 일치하는 네 대학의 환산 결과입니다.</p>
+          </div>
+        </div>
+        <div id="scoreOverview" class="score-overview"></div>
+      </section>
+
       <section class="band" aria-labelledby="timeline-title">
         <div class="section-head">
           <div>
             <h2 id="timeline-title">대학별 타임라인</h2>
-            <p>대학명을 누르면 아래 세부 일정으로 이동합니다.</p>
+            <p>원서·서류 접수 이후의 면접, 발표, 등록, 충원 일정만 표시합니다.</p>
           </div>
           <div class="legend" aria-label="일정 색상 범례">
-            <span class="legend-item"><span class="swatch apply"></span>원서·서류</span>
             <span class="legend-item"><span class="swatch exam"></span>면접</span>
             <span class="legend-item"><span class="swatch result"></span>발표</span>
             <span class="legend-item"><span class="swatch register"></span>등록</span>
@@ -821,6 +874,7 @@
         vendors: [{ name: "진학어플라이", url: "https://apply.jinhakapply.com/" }],
         fee: "95,000원", feeNote: "1단계 불합격 시 30,000원 반환",
         competition: { seats: "23", applicants: "272", ratio: "11.83 : 1", label: "진학 최종", url: "https://addon.jinhakapply.com/RatioV1/RatioH/Ratio11080811.html" },
+        academic: { score: "97.2364", grade: "1.29" },
         events: [
           { kind: "apply", title: "입학지원서 접수", start: "2026-09-07T10:00", end: "2026-09-09T17:00", date: "9.7(월) 10:00 ~ 9.9(수) 17:00" },
           { kind: "apply", title: "해당자 서류 온라인 제출", start: "2026-09-07T10:00", end: "2026-09-10T17:00", date: "9.7(월) 10:00 ~ 9.10(목) 17:00" },
@@ -867,6 +921,7 @@
         vendors: [{ name: "유웨이어플라이", url: "https://ipsi1.uwayapply.com/2027/susi2/korea/?CHA=1" }],
         fee: "95,000원", feeNote: "일괄 납부",
         competition: { seats: "21", applicants: "139", ratio: "6.62 : 1", label: "유웨이 최종", url: "https://ratio.uwayapply.com/Sl5KOGB9YTlKZiUmOiZKN2ZUZg==" },
+        academic: { score: "88.8902", grade: "1.31" },
         events: [
           { kind: "apply", title: "입학지원서 접수", start: "2026-09-07T10:00", end: "2026-09-09T17:00", date: "9.7(월) 10:00 ~ 9.9(수) 17:00" },
           { kind: "apply", title: "해당자 온라인 서류", start: "2026-09-07T10:00", end: "2026-09-09T18:00", date: "9.7(월) 10:00 ~ 9.9(수) 18:00" },
@@ -892,6 +947,7 @@
         vendors: [{ name: "진학어플라이", url: "https://apply.jinhakapply.com/" }],
         fee: "60,000원", feeNote: "인터넷 접수 수수료 포함",
         competition: { seats: "5", applicants: "125", ratio: "25.00 : 1", label: "진학 최종", url: "https://addon.jinhakapply.com/RatioV1/RatioH/Ratio10920591.html" },
+        academic: { score: "788.72", grade: "1.40" },
         events: [
           { kind: "apply", title: "입학지원서 접수", start: "2026-09-08T10:00", end: "2026-09-11T18:00", date: "9.8(화) 10:00 ~ 9.11(금) 18:00" },
           { kind: "apply", title: "해당자 서류 온라인 제출", start: "2026-09-08T10:00", end: "2026-09-12T14:00", date: "9.8(화) 10:00 ~ 9.12(토) 14:00" },
@@ -913,6 +969,7 @@
         vendors: [{ name: "진학어플라이", url: "https://apply.jinhakapply.com/" }],
         fee: "50,000원", feeNote: "인터넷 접수 수수료 대학 부담",
         competition: { seats: "17", applicants: "160", ratio: "9.41 : 1", label: "진학 최종", url: "https://addon.jinhakapply.com/RatioV1/RatioH/Ratio11640591.html" },
+        academic: { score: "889.435", grade: "1.29" },
         events: [
           { kind: "apply", title: "입학지원서 접수", start: "2026-09-08T10:00", end: "2026-09-11T18:00", date: "9.8(화) 10:00 ~ 9.11(금) 18:00" },
           { kind: "apply", title: "해당자 PDF 서류 업로드", start: "2026-09-08T10:00", end: "2026-09-14T23:59", date: "9.8(화) ~ 9.14(월)", note: "일반 국내고 재학생은 통상 해당 없음" },
@@ -1029,6 +1086,7 @@
 
     const kindNames = { apply: "원서·서류", exam: "면접", result: "발표", register: "등록", extra: "충원·후속" };
     const kindColors = { apply: "#2368b5", exam: "#d16a1d", result: "#188160", register: "#7652a6", extra: "#596675" };
+    const scheduleKinds = new Set(["exam", "result", "register", "extra"]);
     let activeFilter = "all";
 
     const parseDate = value => new Date(value);
@@ -1081,13 +1139,30 @@
       }).join("");
     }
 
+    function renderScoreOverview() {
+      const host = document.getElementById("scoreOverview");
+      const rows = schools.filter(s => s.academic);
+      const header = `<div class="score-row header">
+        <div class="score-cell">대학</div>
+        <div class="score-cell">지원 전형·모집단위</div>
+        <div class="score-cell score-number">환산점수</div>
+        <div class="score-cell score-number">환산교과등급</div>
+      </div>`;
+      host.innerHTML = header + rows.map(s => `<div class="score-row">
+        <div class="score-cell score-school">${escapeHtml(s.school)}</div>
+        <div class="score-cell score-program">${escapeHtml(s.program)}</div>
+        <div class="score-cell score-number score-points"><span class="score-mobile-label">환산점수</span>${escapeHtml(s.academic.score)}</div>
+        <div class="score-cell score-number score-grade"><span class="score-mobile-label">환산교과등급</span>${escapeHtml(s.academic.grade)}</div>
+      </div>`).join("");
+    }
+
     function renderNextDeadlines() {
       const host = document.getElementById("nextDeadlines");
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       document.getElementById("todayLabel").textContent = `${today.getFullYear()}.${today.getMonth() + 1}.${today.getDate()} 기준, 종료되지 않은 일정입니다.`;
 
-      const events = schools.flatMap(s => s.events.map(e => ({ ...e, school: s.school })))
+      const events = schools.flatMap(s => s.events.filter(e => scheduleKinds.has(e.kind)).map(e => ({ ...e, school: s.school })))
         .filter(e => parseDate(e.end) >= today)
         .sort((a, b) => parseDate(a.end) - parseDate(b.end))
         .slice(0, 5);
@@ -1112,7 +1187,7 @@
       ];
       host.innerHTML = groups.map(group => {
         const items = schools.filter(s => s.group === group.key).map(s => {
-          const events = s.events.filter(e => activeFilter === "all" || e.kind === activeFilter);
+          const events = s.events.filter(e => scheduleKinds.has(e.kind) && (activeFilter === "all" || e.kind === activeFilter));
           const eventHtml = events.length ? events.map(e => `
             <li class="schedule-item">
               <span class="kind-pill ${e.kind}">${kindNames[e.kind]}</span>
@@ -1152,6 +1227,10 @@
                 <strong>${escapeHtml(s.competition.ratio)}</strong>
                 <span>모집 ${escapeHtml(s.competition.seats)}명 · 지원 ${escapeHtml(s.competition.applicants)}명</span>
               </div>
+              ${s.academic ? `<div class="school-score">
+                환산점수 <strong>${escapeHtml(s.academic.score)}</strong><br>
+                환산교과등급 <strong>${escapeHtml(s.academic.grade)}</strong>
+              </div>` : ""}
               <a class="source-link" href="${s.source}" target="_blank" rel="noopener">공식 입학처 확인</a>
             </div>
             <div class="school-content">
@@ -1182,7 +1261,7 @@
     function renderTimeline() {
       const svg = document.getElementById("timeline");
       const visibleEvents = schools.flatMap((s, row) => s.events
-        .filter(e => activeFilter === "all" || e.kind === activeFilter)
+        .filter(e => scheduleKinds.has(e.kind) && (activeFilter === "all" || e.kind === activeFilter))
         .map(e => ({ ...e, row, schoolId: s.id })));
 
       if (!visibleEvents.length) return;
@@ -1268,6 +1347,7 @@
     renderNextDeadlines();
     renderApplicationOverview();
     renderCompetitionOverview();
+    renderScoreOverview();
     renderDetails();
     renderTimeline();
   </script>
