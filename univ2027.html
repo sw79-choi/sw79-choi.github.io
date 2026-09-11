@@ -222,66 +222,6 @@
       white-space: nowrap;
     }
 
-    .application-overview {
-      border-top: 1px solid var(--line);
-    }
-    .application-row {
-      display: grid;
-      grid-template-columns: 104px minmax(240px, 1fr) 180px minmax(230px, .9fr);
-      align-items: center;
-      min-height: 54px;
-      border-bottom: 1px solid var(--line);
-    }
-    .application-row.header {
-      min-height: 38px;
-      color: var(--muted);
-      background: #f8f9fb;
-      font-size: 11px;
-      font-weight: 800;
-    }
-    .application-cell {
-      min-width: 0;
-      padding: 9px 12px;
-    }
-    .application-school { font-weight: 850; }
-    .application-program {
-      color: #4f5965;
-      font-size: 13px;
-    }
-    .vendor-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-    }
-    .vendor-link {
-      display: inline-flex;
-      align-items: center;
-      min-height: 29px;
-      padding: 4px 8px;
-      border: 1px solid #9ab6d5;
-      border-radius: 4px;
-      color: #14558f;
-      background: #f5f9fd;
-      font-size: 12px;
-      font-weight: 800;
-      text-decoration: none;
-    }
-    .vendor-link:hover {
-      border-color: var(--apply);
-      background: #eaf3fb;
-    }
-    .application-fee {
-      font-size: 14px;
-      font-weight: 850;
-    }
-    .fee-note {
-      display: block;
-      margin-top: 2px;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 500;
-    }
-
     .competition-overview {
       border-top: 1px solid var(--line);
     }
@@ -436,13 +376,6 @@
       font-size: 12px;
       text-underline-offset: 3px;
     }
-    .school-application-meta {
-      display: grid;
-      gap: 8px;
-      margin-top: 14px;
-      padding-top: 13px;
-      border-top: 1px solid #edf0f3;
-    }
     .school-meta-label {
       display: block;
       margin-bottom: 4px;
@@ -450,7 +383,6 @@
       font-size: 10px;
       font-weight: 800;
     }
-    .school-application-meta .application-fee { font-size: 15px; }
     .school-content {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(340px, .92fr);
@@ -571,7 +503,6 @@
       .deadline-item:nth-child(2n) { border-right: 0; }
       .deadline-item:nth-child(-n+4) { border-bottom: 1px solid var(--line); }
       .deadline-item:last-child { grid-column: 1 / -1; }
-      .application-row { grid-template-columns: 90px minmax(190px, 1fr) 160px 220px; }
       .competition-row { grid-template-columns: 90px minmax(220px, 1fr) 70px 84px 102px 88px; }
       .score-row { grid-template-columns: 90px minmax(220px, 1fr) 130px 140px; }
       .school-block { grid-template-columns: 190px 1fr; }
@@ -605,26 +536,6 @@
       .deadline-item:last-child { border-bottom: 0; }
       .deadline-school, .deadline-title { margin-top: 0; }
       .deadline-title { white-space: normal; }
-      .application-overview { border-top: 0; }
-      .application-row,
-      .application-row.header {
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 0 12px;
-        padding: 12px 0;
-        background: #fff;
-      }
-      .application-row.header { display: none; }
-      .application-cell { padding: 2px 0; }
-      .application-school { grid-column: 1; font-size: 16px; }
-      .application-program { grid-column: 1 / -1; font-size: 14px; }
-      .application-vendor { grid-column: 1; margin-top: 7px; }
-      .application-fee-cell {
-        grid-column: 2;
-        grid-row: 1;
-        text-align: right;
-      }
-      .vendor-link { min-height: 34px; font-size: 13px; }
-      .fee-note { max-width: 170px; margin-left: auto; white-space: normal; }
       .competition-overview { border-top: 0; }
       .competition-row,
       .competition-row.header {
@@ -668,11 +579,6 @@
       }
       .school-name { font-size: 24px; }
       .school-program { font-size: 16px; line-height: 1.45; }
-      .school-application-meta {
-        grid-template-columns: minmax(0, 1fr) auto;
-        align-items: end;
-      }
-      .school-application-meta .meta-fee { text-align: right; }
       .school-content { padding: 17px 0 24px; gap: 22px; }
       .content-title { font-size: 16px; }
       .schedule-item {
@@ -767,16 +673,6 @@
         <div id="nextDeadlines" class="next-deadlines"></div>
       </section>
 
-      <section class="band" aria-labelledby="application-title">
-        <div class="section-head">
-          <div>
-            <h2 id="application-title">원서접수처·전형료</h2>
-            <p>접수 시 예상 685,000원 · 서울대 2단계 진출 시 최대 705,000원</p>
-          </div>
-        </div>
-        <div id="applicationOverview" class="application-overview"></div>
-      </section>
-
       <section class="band" aria-labelledby="competition-title">
         <div class="section-head">
           <div>
@@ -831,7 +727,6 @@
     <footer>
       <p><strong>기준 자료:</strong> 수시컨설팅 최종 지원안, 각 대학 2027학년도 수시 모집요강, 진학어플라이·유웨이어플라이 최종 경쟁률.</p>
       <p>학교생활기록부 온라인 제공에 동의하는 국내 고교 재학생을 기본 상황으로 정리했습니다. ‘해당자’ 서류는 본인의 지원자격과 학생부 온라인 제공 가능 여부에 따라 달라집니다.</p>
-      <p>전형료는 공식 요강의 인터넷 접수 수수료 포함 여부와 단계별 반환 기준을 반영했습니다. 실제 결제 전 원서접수 화면의 금액을 마지막으로 확인하세요.</p>
       <p>접수 직전에는 반드시 각 입학처 원서접수 화면의 마감 시각과 제출 상태를 다시 확인하세요.</p>
     </footer>
   </div>
@@ -841,11 +736,6 @@
       {
         id: "snu", school: "서울대", group: "general", program: "일반전형 · 첨단융합학부",
         source: "https://admission.snu.ac.kr/",
-        vendors: [
-          { name: "진학어플라이", url: "https://apply.jinhakapply.com/" },
-          { name: "유웨이어플라이", url: "https://www.uwayapply.com/" }
-        ],
-        fee: "최대 60,000원", feeNote: "1단계 40,000원 + 1단계 합격 후 20,000원",
         competition: { seats: "98", applicants: "580", ratio: "5.92 : 1", label: "서울대 공식 최종", url: "https://admission.snu.ac.kr/undergraduate/notice?bbsidx=175151&md=v" },
         events: [
           { kind: "apply", title: "입학지원서 접수", start: "2026-09-07T10:00", end: "2026-09-09T18:00", date: "9.7(월) 10:00 ~ 9.9(수) 18:00" },
@@ -871,8 +761,6 @@
       {
         id: "yonsei", school: "연세대", group: "general", program: "학생부종합 활동우수형 · 기계공학부",
         source: "https://admission.yonsei.ac.kr/seoul/",
-        vendors: [{ name: "진학어플라이", url: "https://apply.jinhakapply.com/" }],
-        fee: "95,000원", feeNote: "1단계 불합격 시 30,000원 반환",
         competition: { seats: "23", applicants: "272", ratio: "11.83 : 1", label: "진학 최종", url: "https://addon.jinhakapply.com/RatioV1/RatioH/Ratio11080811.html" },
         academic: { score: "97.2364", grade: "1.29" },
         events: [
@@ -897,8 +785,6 @@
       {
         id: "postech", school: "POSTECH", group: "general", program: "기회균형 지역인재전형 · 단일계열",
         source: "https://adm-u.postech.ac.kr/entrance-exam/guide/",
-        vendors: [{ name: "유웨이어플라이", url: "https://www.uwayapply.com/" }],
-        fee: "60,000원", feeNote: "서류평가만 실시",
         competition: { seats: "20", applicants: "126", ratio: "6.30 : 1", label: "유웨이 최종", url: "https://ratio.uwayapply.com/Sl5KfExgMCZhaUpmJSY6Jko3ZlRm" },
         events: [
           { kind: "apply", title: "입학지원서 및 온라인 서류", start: "2026-09-08T10:00", end: "2026-09-10T18:00", date: "9.8(화) 10:00 ~ 9.10(목) 18:00" },
@@ -918,8 +804,6 @@
       {
         id: "korea", school: "고려대", group: "general", program: "학생부교과 학교추천전형 · 기계공학부",
         source: "https://oku.korea.ac.kr/",
-        vendors: [{ name: "유웨이어플라이", url: "https://ipsi1.uwayapply.com/2027/susi2/korea/?CHA=1" }],
-        fee: "95,000원", feeNote: "일괄 납부",
         competition: { seats: "21", applicants: "139", ratio: "6.62 : 1", label: "유웨이 최종", url: "https://ratio.uwayapply.com/Sl5KOGB9YTlKZiUmOiZKN2ZUZg==" },
         academic: { score: "88.8902", grade: "1.31" },
         events: [
@@ -944,8 +828,6 @@
       {
         id: "skku", school: "성균관대", group: "general", program: "학생부종합 융합인재 · 지능형소프트웨어학과 (5명)",
         source: "https://admission.skku.edu/",
-        vendors: [{ name: "진학어플라이", url: "https://apply.jinhakapply.com/" }],
-        fee: "60,000원", feeNote: "인터넷 접수 수수료 포함",
         competition: { seats: "5", applicants: "125", ratio: "25.00 : 1", label: "진학 최종", url: "https://addon.jinhakapply.com/RatioV1/RatioH/Ratio10920591.html" },
         academic: { score: "788.72", grade: "1.40" },
         events: [
@@ -966,8 +848,6 @@
       {
         id: "hanyang", school: "한양대", group: "general", program: "학생부교과 추천형 · 기계공학부",
         source: "https://go.hanyang.ac.kr/",
-        vendors: [{ name: "진학어플라이", url: "https://apply.jinhakapply.com/" }],
-        fee: "50,000원", feeNote: "인터넷 접수 수수료 대학 부담",
         competition: { seats: "17", applicants: "160", ratio: "9.41 : 1", label: "진학 최종", url: "https://addon.jinhakapply.com/RatioV1/RatioH/Ratio11640591.html" },
         academic: { score: "889.435", grade: "1.29" },
         events: [
@@ -990,8 +870,6 @@
       {
         id: "kaist", school: "KAIST", group: "science", program: "Early Admission 학교장추천전형",
         source: "https://admission.kaist.ac.kr/",
-        vendors: [{ name: "유웨이어플라이", url: "https://www.uwayapply.com/" }],
-        fee: "65,000원", feeNote: "접수 수수료 5,000원 포함",
         competition: { seats: "85", applicants: "1,514", ratio: "17.81 : 1", label: "KAIST 최종", url: "https://admission.kaist.ac.kr/undergraduate/admission/rsub/2027" },
         events: [
           { kind: "apply", title: "지원서·자소서·독서이력·서류", start: "2026-09-01T09:00", end: "2026-09-09T18:00", date: "9.1(화) ~ 9.9(수) 18:00" },
@@ -1018,8 +896,6 @@
       {
         id: "unist", school: "UNIST", group: "science", program: "수시 일반전형 · 이공계열(무학과)",
         source: "https://adm-u.unist.ac.kr/",
-        vendors: [{ name: "유웨이어플라이", url: "https://ipsi3.uwayapply.com/" }],
-        fee: "65,000원", feeNote: "전형료 60,000원 + 수수료 5,000원",
         competition: { seats: "355", applicants: "8,219", ratio: "23.15 : 1", label: "유웨이 최종", url: "https://ratio.uwayapply.com/Sl5KMCYlVzpKXiUmOiZKN2ZUZg==" },
         events: [
           { kind: "apply", title: "입학지원서 접수", start: "2026-09-03T09:00", end: "2026-09-10T18:00", date: "9.3(목) 09:00 ~ 9.10(목) 18:00" },
@@ -1040,8 +916,6 @@
       {
         id: "gist", school: "GIST", group: "science", program: "수시 일반전형 · 반도체공학과",
         source: "https://www.gist.ac.kr/uadm/",
-        vendors: [{ name: "유웨이어플라이", url: "https://www.uwayapply.com/" }],
-        fee: "90,000원", feeNote: "수수료 포함 · 1단계 불합격 시 40,000원 반환",
         competition: { seats: "25", applicants: "289", ratio: "11.56 : 1", label: "유웨이 최종", url: "https://ratio.uwayapply.com/Sl5KbzBlbyZlbyVlb3JlSl4lJjomSjdmVGY=" },
         events: [
           { kind: "apply", title: "원서·자소서·추천서·서류", start: "2026-09-07T09:00", end: "2026-09-11T18:00", date: "9.7(월) 09:00 ~ 9.11(금) 18:00" },
@@ -1063,8 +937,6 @@
       {
         id: "dgist", school: "DGIST", group: "science", program: "수시 학교장추천전형 · 반도체공학과 (12명)",
         source: "https://www.dgist.ac.kr/adm/",
-        vendors: [{ name: "유웨이어플라이", url: "https://www.uwayapply.com/" }],
-        fee: "65,000원", feeNote: "접수 수수료 5,000원 포함",
         competition: { seats: "12", applicants: "107", ratio: "8.92 : 1", label: "유웨이 최종", url: "https://ratio.uwayapply.com/Sl5KMCYlclZKXiUmOiZKN2ZUZg==" },
         events: [
           { kind: "apply", title: "원서·자소서·학생부", start: "2026-09-03T09:00", end: "2026-09-10T18:00", date: "9.3(목) 09:00 ~ 9.10(목) 18:00" },
@@ -1092,29 +964,6 @@
     const parseDate = value => new Date(value);
     const dateKey = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     const escapeHtml = value => String(value).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
-
-    function vendorLinks(school) {
-      return `<div class="vendor-list">${school.vendors.map(v => `<a class="vendor-link" href="${v.url}" target="_blank" rel="noopener">${escapeHtml(v.name)}</a>`).join("")}</div>`;
-    }
-
-    function renderApplicationOverview() {
-      const host = document.getElementById("applicationOverview");
-      const header = `<div class="application-row header">
-        <div class="application-cell">대학</div>
-        <div class="application-cell">지원 전형</div>
-        <div class="application-cell">원서접수처</div>
-        <div class="application-cell">전형료</div>
-      </div>`;
-      host.innerHTML = header + schools.map(s => `<div class="application-row">
-        <div class="application-cell application-school">${escapeHtml(s.school)}</div>
-        <div class="application-cell application-program">${escapeHtml(s.program)}</div>
-        <div class="application-cell application-vendor">${vendorLinks(s)}</div>
-        <div class="application-cell application-fee-cell">
-          <span class="application-fee">${escapeHtml(s.fee)}</span>
-          <span class="fee-note">${escapeHtml(s.feeNote)}</span>
-        </div>
-      </div>`).join("");
-    }
 
     function renderCompetitionOverview() {
       const host = document.getElementById("competitionOverview");
@@ -1211,17 +1060,6 @@
               <h3 class="school-name">${escapeHtml(s.school)}</h3>
               <p class="school-program">${escapeHtml(s.program)}</p>
               <span class="type-label ${group.key}">${group.key === "general" ? "일반대학" : "과학기술원"}</span><br>
-              <div class="school-application-meta">
-                <div>
-                  <span class="school-meta-label">원서접수처</span>
-                  ${vendorLinks(s)}
-                </div>
-                <div class="meta-fee">
-                  <span class="school-meta-label">전형료</span>
-                  <span class="application-fee">${escapeHtml(s.fee)}</span>
-                  <span class="fee-note">${escapeHtml(s.feeNote)}</span>
-                </div>
-              </div>
               <div class="school-competition">
                 <span class="school-meta-label">2027 최종 경쟁률</span>
                 <strong>${escapeHtml(s.competition.ratio)}</strong>
@@ -1345,7 +1183,6 @@
     window.addEventListener("resize", () => renderTimeline());
 
     renderNextDeadlines();
-    renderApplicationOverview();
     renderCompetitionOverview();
     renderScoreOverview();
     renderDetails();
