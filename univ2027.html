@@ -294,6 +294,51 @@
       font-size: 12px;
     }
     .school-score strong { color: var(--ink); font-size: 16px; }
+    .school-csat {
+      margin-top: 9px;
+      padding: 11px 12px;
+      border-left: 3px solid #7a8794;
+      background: #f6f7f8;
+    }
+    .school-csat.required {
+      border-left-color: #b64b3a;
+      background: #fff5f2;
+    }
+    .csat-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .csat-title { font-size: 12px; font-weight: 850; }
+    .csat-badge {
+      flex: 0 0 auto;
+      padding: 3px 7px;
+      border: 1px solid #89939d;
+      border-radius: 4px;
+      color: #596675;
+      background: #fff;
+      font-size: 10px;
+      font-weight: 900;
+    }
+    .school-csat.required .csat-badge {
+      border-color: #c87162;
+      color: #9e3424;
+      background: #fff;
+    }
+    .csat-condition {
+      margin: 7px 0 0;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 850;
+      line-height: 1.45;
+    }
+    .csat-detail {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
 
     .legend {
       display: flex;
@@ -579,6 +624,9 @@
       }
       .school-name { font-size: 24px; }
       .school-program { font-size: 16px; line-height: 1.45; }
+      .csat-title { font-size: 13px; }
+      .csat-condition { font-size: 15px; }
+      .csat-detail { font-size: 13px; }
       .school-content { padding: 17px 0 24px; gap: 22px; }
       .content-title { font-size: 16px; }
       .schedule-item {
@@ -726,6 +774,7 @@
 
     <footer>
       <p><strong>기준 자료:</strong> 수시컨설팅 최종 지원안, 각 대학 2027학년도 수시 모집요강, 진학어플라이·유웨이어플라이 최종 경쟁률.</p>
+      <p>수능최저 적용 여부와 조건은 지원한 모집단위·전형 기준입니다. 탐구 산정 방식과 필수 응시영역까지 함께 확인하세요.</p>
       <p>학교생활기록부 온라인 제공에 동의하는 국내 고교 재학생을 기본 상황으로 정리했습니다. ‘해당자’ 서류는 본인의 지원자격과 학생부 온라인 제공 가능 여부에 따라 달라집니다.</p>
       <p>접수 직전에는 반드시 각 입학처 원서접수 화면의 마감 시각과 제출 상태를 다시 확인하세요.</p>
     </footer>
@@ -736,6 +785,7 @@
       {
         id: "snu", school: "서울대", group: "general", program: "일반전형 · 첨단융합학부",
         source: "https://admission.snu.ac.kr/",
+        csat: { required: false, condition: "수능최저 미적용", detail: "학생부종합 일반전형 · 첨단융합학부 기준" },
         competition: { seats: "98", applicants: "580", ratio: "5.92 : 1", label: "서울대 공식 최종", url: "https://admission.snu.ac.kr/undergraduate/notice?bbsidx=175151&md=v" },
         events: [
           { kind: "apply", title: "입학지원서 접수", start: "2026-09-07T10:00", end: "2026-09-09T18:00", date: "9.7(월) 10:00 ~ 9.9(수) 18:00" },
@@ -761,6 +811,7 @@
       {
         id: "yonsei", school: "연세대", group: "general", program: "학생부종합 활동우수형 · 기계공학부",
         source: "https://admission.yonsei.ac.kr/seoul/",
+        csat: { required: true, condition: "수학 포함 2개 등급 합 5 이내", detail: "국어·수학·과탐 중 2개(수학 필수) · 영어 3등급 이내 · 한국사 4등급 이내 · 수학은 미적분/기하, 탐구는 과탐 개별 과목 등급 반영" },
         competition: { seats: "23", applicants: "272", ratio: "11.83 : 1", label: "진학 최종", url: "https://addon.jinhakapply.com/RatioV1/RatioH/Ratio11080811.html" },
         academic: { score: "97.2364", grade: "1.29" },
         events: [
@@ -785,6 +836,7 @@
       {
         id: "postech", school: "POSTECH", group: "general", program: "기회균형 지역인재전형 · 단일계열",
         source: "https://adm-u.postech.ac.kr/entrance-exam/guide/",
+        csat: { required: false, condition: "수능최저 미적용", detail: "기회균형 지역인재전형 기준 · POSTECH은 일반전형Ⅱ에만 수능최저 적용" },
         competition: { seats: "20", applicants: "126", ratio: "6.30 : 1", label: "유웨이 최종", url: "https://ratio.uwayapply.com/Sl5KfExgMCZhaUpmJSY6Jko3ZlRm" },
         events: [
           { kind: "apply", title: "입학지원서 및 온라인 서류", start: "2026-09-08T10:00", end: "2026-09-10T18:00", date: "9.8(화) 10:00 ~ 9.10(목) 18:00" },
@@ -804,6 +856,7 @@
       {
         id: "korea", school: "고려대", group: "general", program: "학생부교과 학교추천전형 · 기계공학부",
         source: "https://oku.korea.ac.kr/",
+        csat: { required: true, condition: "국어·수학·영어·탐구 중 3개 합 7 이내", detail: "한국사 4등급 이내 · 탐구는 사회탐구/과학탐구 중 상위 1과목 반영" },
         competition: { seats: "21", applicants: "139", ratio: "6.62 : 1", label: "유웨이 최종", url: "https://ratio.uwayapply.com/Sl5KOGB9YTlKZiUmOiZKN2ZUZg==" },
         academic: { score: "88.8902", grade: "1.31" },
         events: [
@@ -828,6 +881,7 @@
       {
         id: "skku", school: "성균관대", group: "general", program: "학생부종합 융합인재 · 지능형소프트웨어학과 (5명)",
         source: "https://admission.skku.edu/",
+        csat: { required: true, condition: "국어·수학·영어·탐구 중 3개 합 6 이내", detail: "탐구 2과목 평균 · 과탐 1과목 이상 응시 시 탐구 평균과 과탐 상위 1과목 중 우수 등급 반영 · 제2외국어/한문으로 탐구 1과목 대체 가능 · 국어·수학·영어·탐구 2과목·한국사 필수 응시" },
         competition: { seats: "5", applicants: "125", ratio: "25.00 : 1", label: "진학 최종", url: "https://addon.jinhakapply.com/RatioV1/RatioH/Ratio10920591.html" },
         academic: { score: "788.72", grade: "1.40" },
         events: [
@@ -848,6 +902,7 @@
       {
         id: "hanyang", school: "한양대", group: "general", program: "학생부교과 추천형 · 기계공학부",
         source: "https://go.hanyang.ac.kr/",
+        csat: { required: true, condition: "국어·수학·영어·탐구 중 3개 합 7 이내", detail: "탐구는 상위 1과목 반영 · 국어·수학·영어·탐구 2과목·한국사 필수 응시" },
         competition: { seats: "17", applicants: "160", ratio: "9.41 : 1", label: "진학 최종", url: "https://addon.jinhakapply.com/RatioV1/RatioH/Ratio11640591.html" },
         academic: { score: "889.435", grade: "1.29" },
         events: [
@@ -870,6 +925,7 @@
       {
         id: "kaist", school: "KAIST", group: "science", program: "Early Admission 학교장추천전형",
         source: "https://admission.kaist.ac.kr/",
+        csat: { required: false, condition: "수능최저 미적용", detail: "Early Admission 학교장추천전형 기준" },
         competition: { seats: "85", applicants: "1,514", ratio: "17.81 : 1", label: "KAIST 최종", url: "https://admission.kaist.ac.kr/undergraduate/admission/rsub/2027" },
         events: [
           { kind: "apply", title: "지원서·자소서·독서이력·서류", start: "2026-09-01T09:00", end: "2026-09-09T18:00", date: "9.1(화) ~ 9.9(수) 18:00" },
@@ -896,6 +952,7 @@
       {
         id: "unist", school: "UNIST", group: "science", program: "수시 일반전형 · 이공계열(무학과)",
         source: "https://adm-u.unist.ac.kr/",
+        csat: { required: false, condition: "수능최저 미적용", detail: "수시 일반전형 · 이공계열(무학과) 기준" },
         competition: { seats: "355", applicants: "8,219", ratio: "23.15 : 1", label: "유웨이 최종", url: "https://ratio.uwayapply.com/Sl5KMCYlVzpKXiUmOiZKN2ZUZg==" },
         events: [
           { kind: "apply", title: "입학지원서 접수", start: "2026-09-03T09:00", end: "2026-09-10T18:00", date: "9.3(목) 09:00 ~ 9.10(목) 18:00" },
@@ -916,6 +973,7 @@
       {
         id: "gist", school: "GIST", group: "science", program: "수시 일반전형 · 반도체공학과",
         source: "https://www.gist.ac.kr/uadm/",
+        csat: { required: false, condition: "수능최저 미적용", detail: "수시 일반전형 · 반도체공학과 기준" },
         competition: { seats: "25", applicants: "289", ratio: "11.56 : 1", label: "유웨이 최종", url: "https://ratio.uwayapply.com/Sl5KbzBlbyZlbyVlb3JlSl4lJjomSjdmVGY=" },
         events: [
           { kind: "apply", title: "원서·자소서·추천서·서류", start: "2026-09-07T09:00", end: "2026-09-11T18:00", date: "9.7(월) 09:00 ~ 9.11(금) 18:00" },
@@ -937,6 +995,7 @@
       {
         id: "dgist", school: "DGIST", group: "science", program: "수시 학교장추천전형 · 반도체공학과 (12명)",
         source: "https://www.dgist.ac.kr/adm/",
+        csat: { required: false, condition: "수능최저 미적용", detail: "수시 학교장추천전형 · 반도체공학과 기준" },
         competition: { seats: "12", applicants: "107", ratio: "8.92 : 1", label: "유웨이 최종", url: "https://ratio.uwayapply.com/Sl5KMCYlclZKXiUmOiZKN2ZUZg==" },
         events: [
           { kind: "apply", title: "원서·자소서·학생부", start: "2026-09-03T09:00", end: "2026-09-10T18:00", date: "9.3(목) 09:00 ~ 9.10(목) 18:00" },
@@ -1069,6 +1128,14 @@
                 환산점수 <strong>${escapeHtml(s.academic.score)}</strong><br>
                 환산교과등급 <strong>${escapeHtml(s.academic.grade)}</strong>
               </div>` : ""}
+              <div class="school-csat${s.csat.required ? " required" : ""}">
+                <div class="csat-head">
+                  <span class="csat-title">수능최저</span>
+                  <span class="csat-badge">${s.csat.required ? "적용" : "미적용"}</span>
+                </div>
+                <p class="csat-condition">${escapeHtml(s.csat.condition)}</p>
+                <p class="csat-detail">${escapeHtml(s.csat.detail)}</p>
+              </div>
               <a class="source-link" href="${s.source}" target="_blank" rel="noopener">공식 입학처 확인</a>
             </div>
             <div class="school-content">
